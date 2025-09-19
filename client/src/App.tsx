@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import './App.css'
-import React, { useState } from 'react'
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -13,6 +12,7 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
+import Button from '@mui/material/Button';
 
 let customers = [
     {
@@ -53,6 +53,7 @@ function App() {
     const updatedList = customerList.filter(c => c.id !== selectedId);
     setCustomerList(updatedList);
     setSelectedId(null);
+    console.log(`Delete customer with id ${selectedId}`)
   }
 
   return (
@@ -69,6 +70,7 @@ function App() {
               Customers List
             </Typography>
             <BasicTable
+              customerList={customerList}
               selectedId={selectedId}
               setSelectedId={setSelectedId}
             />
@@ -78,7 +80,7 @@ function App() {
           </Grid>
           <Grid size={12}>
             <button className="form-button delete" onClick={ handleDeleteAction }
-                  disabled={selectedId === null}>
+                  disabled={selectedId === null} style={selectedId === null ? { pointerEvents: 'none' } : {}}>
             Delete
           </button>
             <button className="form-button">Save</button>
@@ -91,9 +93,11 @@ function App() {
 }
 
 function BasicTable({
+  customerList,
   selectedId,
   setSelectedId,
 }: {
+  customerList: typeof customers,
   selectedId: number | null,
   setSelectedId: (id: number | null) => void
 }) {
@@ -117,7 +121,7 @@ function BasicTable({
           </TableRow>
         </TableHead>
         <TableBody>
-          {customers.map((row) => {
+          {customerList.map((row) => {
             const isSelected = selectedId === row.id;
             return (
               <TableRow
