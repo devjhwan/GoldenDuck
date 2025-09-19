@@ -1,4 +1,6 @@
 import './App.css'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
 
 let customers = [
     {
@@ -32,8 +34,33 @@ function App() {
           </li>
         ))}
       </ul>
+      <AddUpdateForm />
     </>
   )
+}
+
+function AddUpdateForm() {
+  return (
+    <Card sx={{ maxWidth: 400, margin: '24px auto' }}>
+      <CardContent>
+        <form>
+          <h2 className="form-title">Add / Update customer</h2>
+          <div className="form-row">
+            <label htmlFor="name" className="form-label">Name</label>
+            <input id="name" type="text" placeholder="Name" className="form-input" />
+          </div>
+          <div className="form-row">
+            <label htmlFor="email" className="form-label">Email</label>
+            <input id="email" type="email" placeholder="Email" className="form-input" />
+          </div>
+          <div className="form-row">
+            <label htmlFor="password" className="form-label">Password</label>
+            <input id="password" type="password" placeholder="Password" className="form-input" />
+          </div>
+        </form>
+      </CardContent>
+    </Card>
+  );
 }
 
 export default App
