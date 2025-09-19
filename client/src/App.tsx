@@ -1,6 +1,5 @@
-import { useState } from 'react';
+import React, { useState } from 'react'
 import './App.css'
-// import * as React from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -35,12 +34,28 @@ let customers = [
     }
   ]
 
-  
-
 function App() {
+  const [selectedId, setSelectedId] = useState<number | null>(null);
   const [customerList, setCustomerList] = useState(customers);
   const [form, setForm] = useState({ name: '', email: '', password: '' });
   const [error, setError] = useState('');
+
+  function handleDeleteAction() {
+    if (selectedId === null) return;
+
+    // Check if customer exists
+    const exists = customerList.some(c => c.id === selectedId);
+    if (!exists) {
+      alert("Customer not found.");
+      return;
+    }
+
+    // Remove customer and update state
+    const updatedList = customerList.filter(c => c.id !== selectedId);
+    setCustomerList(updatedList);
+    setSelectedId(null);
+    console.log(`Delete customer with id ${selectedId}`)
+  }
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -72,34 +87,56 @@ function App() {
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
-      <Grid container spacing={2}>
-        <Grid size={12}>
-          <Typography
-            sx={{ flex: '1 1 100%' }}
-            variant="h6"
-            id="tableTitle"
-            component="div"
-          >
-            Customers List
-          </Typography>
-          <BasicTable customerList={customerList} />
+        <Grid container spacing={2}>
+          <Grid size={12}>
+            <Typography
+              sx={{ flex: '1 1 100%' }}
+              variant="h6"
+              id="tableTitle"
+              component="div"
+            >
+              Customers List
+            </Typography>
+            <BasicTable
+              customerList={customerList}
+              selectedId={selectedId}
+              setSelectedId={setSelectedId}
+            />
+          </Grid>
+          <Grid size={12}>
+            <AddUpdateForm form={form} onInputChange={handleInputChange} error={error}/>
+          </Grid>
+          <Grid size={12}>
+            <button className="form-button delete" onClick={ handleDeleteAction }
+                  disabled={selectedId === null} style={selectedId === null ? { pointerEvents: 'none' } : {}}>
+            Delete
+          </button>
+            <button className="form-button" onClick={handleSave}>Save</button>
+            <button className="form-button">Cancel</button>
+          </Grid>
         </Grid>
-        <Grid size={12}>
-          <AddUpdateForm form={form} onInputChange={handleInputChange} error={error} />
-        </Grid>
-        <Grid size={12}>
-          <button className="form-button delete">Delete</button>
-          <button className="form-button" onClick={handleSave}>Save</button>
-          <button className="form-button">Cancel</button>
-        </Grid>
-      </Grid>
-    </Box>
+      </Box>
     </>
   )
 }
 
-function BasicTable({ customerList }: 
-  { customerList: Array<{ id: number; name: string; email: string; password: string }> }) {
+function BasicTable({
+  customerList,
+  selectedId,
+  setSelectedId,
+}: {
+  customerList: typeof customers,
+  selectedId: number | null,
+  setSelectedId: (id: number | null) => void
+}) {
+  function handleRowClick(id: number) {
+    if (selectedId !== id )
+      console.log(`selected customer with id ${id}.`)
+    else
+      console.log("Deselect customor.")
+    setSelectedId(selectedId === id ? null : id);
+  }
+
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -112,19 +149,33 @@ function BasicTable({ customerList }:
           </TableRow>
         </TableHead>
         <TableBody>
-          {customerList.map((row: any) => (
-            <TableRow
-              key={row.name}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">
-                {row.id}
-              </TableCell>
-              <TableCell align="right">{row.name}</TableCell>
-              <TableCell align="right">{row.email}</TableCell>
-              <TableCell align="right">{row.password}</TableCell>
-            </TableRow>
-          ))}
+          {customerList.map((row) => {
+            const isSelected = selectedId === row.id;
+            return (
+              <TableRow
+                key={row.name}
+                sx={{
+                  '&:last-child td, &:last-child th': { border: 0 },
+                  backgroundColor: isSelected ? '#e3f2fd' : 'inherit',
+                  cursor: 'pointer'
+                }}
+                onClick={() => handleRowClick(row.id)}
+              >
+                <TableCell component="th" scope="row" sx={isSelected ? { fontWeight: 'bold' } : {}}>
+                  {row.id}
+                </TableCell>
+                <TableCell align="right" sx={isSelected ? { fontWeight: 'bold' } : {}}>
+                  {row.name}
+                </TableCell>
+                <TableCell align="right" sx={isSelected ? { fontWeight: 'bold' } : {}}>
+                  {row.email}
+                </TableCell>
+                <TableCell align="right" sx={isSelected ? { fontWeight: 'bold' } : {}}>
+                  {row.password}
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </TableContainer>
