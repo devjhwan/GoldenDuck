@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import './App.css'
 // import * as React from 'react';
 import Table from '@mui/material/Table';
@@ -37,6 +38,37 @@ let customers = [
   
 
 function App() {
+  const [customerList, setCustomerList] = useState(customers);
+  const [form, setForm] = useState({ name: '', email: '', password: '' });
+  const [error, setError] = useState('');
+
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setForm({ ...form, [e.target.name]: e.target.value });
+    setError(''); // Limpiar error al escribir
+  }
+
+  function handleSave() {
+    if (!form.name || !form.email || !form.password) {
+      setError("All fields are required.");
+      return;
+    }
+    // Check for duplicate email
+    const emailExists = customerList.some(
+      (c) => c.email.toLowerCase() === form.email.toLowerCase()
+    );
+    if (emailExists) {
+      setError("Email already exists. Please use a different email.");
+      return;
+    }
+    const newCustomer = {
+      id: customerList.length ? Math.max(...customerList.map(c => c.id)) + 1 : 0,
+      ...form,
+    };
+    setCustomerList([...customerList, newCustomer]);
+    setForm({ name: '', email: '', password: '' });
+    setError('');
+  }
+
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
@@ -50,14 +82,14 @@ function App() {
           >
             Customers List
           </Typography>
-          <BasicTable />
+          <BasicTable customerList={customerList} />
         </Grid>
         <Grid size={12}>
-          <AddUpdateForm />
+          <AddUpdateForm form={form} onInputChange={handleInputChange} error={error} />
         </Grid>
         <Grid size={12}>
           <button className="form-button delete">Delete</button>
-          <button className="form-button">Save</button>
+          <button className="form-button" onClick={handleSave}>Save</button>
           <button className="form-button">Cancel</button>
         </Grid>
       </Grid>
@@ -66,7 +98,8 @@ function App() {
   )
 }
 
-function BasicTable() {
+function BasicTable({ customerList }: 
+  { customerList: Array<{ id: number; name: string; email: string; password: string }> }) {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -79,7 +112,7 @@ function BasicTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {customers.map((row) => (
+          {customerList.map((row: any) => (
             <TableRow
               key={row.name}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -98,7 +131,12 @@ function BasicTable() {
   );
 }
 
-function AddUpdateForm() {
+// Update AddUpdateForm to use props
+function AddUpdateForm({ form, onInputChange, error }: {
+  form: { name: string; email: string; password: string },
+  onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
+  error?: string
+}) {
   return (
     <Card sx={{ maxWidth: 400, margin: '24px auto' }}>
       <CardContent>
@@ -106,16 +144,19 @@ function AddUpdateForm() {
           <h2 className="form-title">Add / Update customer</h2>
           <div className="form-row">
             <label htmlFor="name" className="form-label">Name</label>
-            <input id="name" type="text" placeholder="Name" className="form-input" />
+            <input id="name" name="name" type="text" placeholder="Name" className="form-input" value={form.name} onChange={onInputChange} />
           </div>
           <div className="form-row">
             <label htmlFor="email" className="form-label">Email</label>
-            <input id="email" type="email" placeholder="Email" className="form-input" />
+            <input id="email" name="email" type="email" placeholder="Email" className="form-input" value={form.email} onChange={onInputChange} />
           </div>
           <div className="form-row">
             <label htmlFor="password" className="form-label">Password</label>
-            <input id="password" type="password" placeholder="Password" className="form-input" />
+            <input id="password" name="password" type="password" placeholder="Password" className="form-input" value={form.password} onChange={onInputChange} />
           </div>
+          {error && (
+            <div style={{ color: 'red', marginTop: 8, textAlign: 'right', fontSize: 14 }}>{error}</div>
+          )}
         </form>
       </CardContent>
     </Card>
