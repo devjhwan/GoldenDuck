@@ -86,8 +86,8 @@ function App() {
 
   return (
     <>
-      <Box sx={{ flexGrow: 1 }}>
-        <Grid container spacing={2}>
+      <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
+        <Grid container spacing={2} sx={{ maxWidth: 1000 }}>
           <Grid size={12}>
             <Typography
               sx={{ flex: '1 1 100%' }}
@@ -138,14 +138,14 @@ function BasicTable({
   }
 
   return (
-    <TableContainer component={Paper}>
+    <TableContainer sx={{ maxWidth: 900}} component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
             <TableCell>ID</TableCell>
-            <TableCell align="right">Name</TableCell>
-            <TableCell align="right">Email</TableCell>
-            <TableCell align="right">Password</TableCell>
+            <TableCell>Name</TableCell>
+            <TableCell>Email</TableCell>
+            <TableCell>Password</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -164,13 +164,13 @@ function BasicTable({
                 <TableCell component="th" scope="row" sx={isSelected ? { fontWeight: 'bold' } : {}}>
                   {row.id}
                 </TableCell>
-                <TableCell align="right" sx={isSelected ? { fontWeight: 'bold' } : {}}>
+                <TableCell sx={isSelected ? { fontWeight: 'bold' } : {}}>
                   {row.name}
                 </TableCell>
-                <TableCell align="right" sx={isSelected ? { fontWeight: 'bold' } : {}}>
+                <TableCell sx={isSelected ? { fontWeight: 'bold' } : {}}>
                   {row.email}
                 </TableCell>
-                <TableCell align="right" sx={isSelected ? { fontWeight: 'bold' } : {}}>
+                <TableCell sx={isSelected ? { fontWeight: 'bold' } : {}}>
                   {row.password}
                 </TableCell>
               </TableRow>
