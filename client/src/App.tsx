@@ -1,5 +1,5 @@
+import React, { useState } from 'react'
 import './App.css'
-// import * as React from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -37,6 +37,25 @@ let customers = [
   
 
 function App() {
+  const [selectedCustomerId, setSelectedCustomerId] = useState<number | null>(null);
+  const [customerList, setCustomerList] = useState(customers);
+
+  function handleDeleteAction() {
+    if (selectedCustomerId === null) return;
+
+    // Check if customer exists
+    const exists = customerList.some(c => c.id === selectedCustomerId);
+    if (!exists) {
+      alert("Customer not found.");
+      return;
+    }
+
+    // Remove customer and update state
+    const updatedList = customerList.filter(c => c.id !== selectedCustomerId);
+    setCustomerList(updatedList);
+    setSelectedCustomerId(null);
+  }
+
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
@@ -56,7 +75,10 @@ function App() {
           <AddUpdateForm />
         </Grid>
         <Grid size={12}>
-          <button className="form-button delete">Delete</button>
+          <button className="form-button delete" onClick={ handleDeleteAction }
+                  disabled={selectedCustomerId === null}>
+            Delete
+          </button>
           <button className="form-button">Save</button>
           <button className="form-button">Cancel</button>
         </Grid>
