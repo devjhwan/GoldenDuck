@@ -55,6 +55,11 @@ function App() {
         <Grid size={12}>
           <AddUpdateForm />
         </Grid>
+        <Grid size={12}>
+          <button className="form-button delete">Delete</button>
+          <button className="form-button">Save</button>
+          <button className="form-button">Cancel</button>
+        </Grid>
       </Grid>
     </Box>
     </>
