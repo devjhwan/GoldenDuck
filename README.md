@@ -1,10 +1,109 @@
 # GoldenDuck
 
-## About
-This project is about the customers list management platform with dummy data. The purpose of this project is to practice full-stack development, including frontend UI and backend API integration.
+## Overview
 
-## Stacks
-React, Typescript, HTML, REST server
+GoldenDuck is a customer management platform designed for practicing full-stack development. It features a modern React + TypeScript frontend and a RESTful backend API. The app allows users to view, add, edit, and delete customer records, as well as sign in and sign out.
+
+---
+
+## Tech Stack
+
+- **Frontend:** React, TypeScript, HTML, MUI DataGrid
+- **Backend:** Node.js (REST API)
+- **Other:** Vite, CSS Modules
+
+---
 
 ## Features
-This platform shows the customers list in the main page and as a user you should be able to sign in, sign out and CRUD operation to customers information.
+
+- 🔒 **Authentication:** Sign in and sign out functionality.
+- 📋 **Customer List:** View all customers in a responsive table.
+- ✏️ **CRUD Operations:** Create, read, update, and delete customer information.
+- ⚡ **Live API Integration:** All operations are performed via REST API calls.
+- 🖥️ **Modern UI:** Built with Material UI DataGrid for a professional look and feel.
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v16 or higher recommended)
+- npm
+
+---
+
+### Frontend Setup
+
+1. **Navigate to the client directory:**
+   ```sh
+   cd client
+   ```
+2. **Install dependencies:**
+   ```sh
+   npm install
+   ```
+3. **Start the development server:**
+   ```sh
+   npm run dev
+   ```
+4. **Open the app:**
+   - Press `o` and `Enter` in the terminal, or  
+   - Go to [http://localhost:5173/](http://localhost:5173/) in your browser.
+
+---
+
+### Backend Setup
+
+1. **Navigate to the server directory:**
+   ```sh
+   cd server
+   ```
+2. **Install dependencies:**
+   ```sh
+   npm install
+   ```
+3. **Start the backend server:**
+   ```sh
+   npm run start
+   ```
+4. **Test the API:**
+   - Use Postman or any REST client to test CRUD endpoints at [http://localhost:4000/customers](http://localhost:4000/customers).
+
+---
+
+## Environment Variables
+
+The frontend uses a `.env` file to configure the backend API URL:
+
+```env
+VITE_SERVER_API=http://localhost:4000/customers
+```
+
+---
+
+## Project Structure
+
+```
+GoldenDuck/
+├── client/   # React frontend
+│   ├── src/
+│   └── ...
+├── server/   # Node.js backend
+│   └── ...
+└── README.md
+```
+
+---
+
+## License
+
+This project is for educational and practice purposes.
+
+---
+
+## Author
+
+- Omar Ninach
+- Pilar Medina
+- JungHwan Lee
