@@ -29,6 +29,7 @@ import {
   randomId,
   randomArrayItem,
 } from '@mui/x-data-grid-generator';
+import Typography from '@mui/material/Typography';
 
 const roles = ['Market', 'Finance', 'Development'];
 const randomRole = () => {
@@ -82,9 +83,13 @@ function EditToolbar(props: GridSlotProps['toolbar']) {
 
   return (
     <Toolbar>
-      <Tooltip title="Add record">
+    <Typography fontWeight="bold" sx={{ flex: 1, mx: 0.5 }}>
+        Customers Table
+      </Typography>
+
+      <Tooltip title="Add customer">
         <ToolbarButton onClick={handleClick}>
-          <AddIcon fontSize="small" />
+          <AddIcon fontSize="small" color="primary"/>
         </ToolbarButton>
       </Tooltip>
     </Toolbar>
@@ -149,7 +154,6 @@ export default function FullFeaturedCrudGrid() {
     {
       field: 'email',
       headerName: 'Email',
-      type: 'text',
       width: 180,
       editable: true,
     },
@@ -214,7 +218,7 @@ export default function FullFeaturedCrudGrid() {
   return (
     <Box
       sx={{
-        height: 500,
+        height: 400,
         width: '100%',
         '& .actions': {
           color: 'text.secondary',
@@ -237,6 +241,13 @@ export default function FullFeaturedCrudGrid() {
           toolbar: { setRows, setRowModesModel },
         }}
         showToolbar
+        columnHeaderHeight={36}
+        sx={{
+          '.MuiDataGrid-columnHeaderTitle': { 
+             fontWeight: 'bold !important',
+             overflow: 'visible !important'
+          }
+        }}
       />
     </Box>
   );
