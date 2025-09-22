@@ -136,7 +136,6 @@ export default function FullFeaturedCrudGrid() {
   };
 
   const columns: GridColDef[] = [
-    { field: 'name', headerName: 'Name', width: 180, editable: true },
     {
       field: 'id',
       headerName: 'ID',
@@ -146,6 +145,7 @@ export default function FullFeaturedCrudGrid() {
       headerAlign: 'left',
       editable: true,
     },
+    { field: 'name', headerName: 'Name', width: 180, editable: true },
     {
       field: 'email',
       headerName: 'Email',
@@ -158,8 +158,8 @@ export default function FullFeaturedCrudGrid() {
       headerName: 'Password',
       width: 220,
       editable: true,
-      type: 'singleSelect',
-      valueOptions: ['Market', 'Finance', 'Development'],
+      // type: 'singleSelect',
+      // valueOptions: ['Market', 'Finance', 'Development'],
     },
     {
       field: 'actions',
