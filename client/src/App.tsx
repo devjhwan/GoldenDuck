@@ -41,20 +41,24 @@ declare module '@mui/x-data-grid' {
 function EditToolbar(props: GridSlotProps['toolbar']) {
   const { setRows, setRowModesModel } = props;
 
-  const getMaxId = (rows) => {
-    return 
+  const autoIncrementId = (rows: GridRowModel[]) => {
+    const numericIds = rows
+      .map(row => Number(row.id))
+      .filter(id => !isNaN(id));
+    return numericIds.length > 0 ? Math.max(...numericIds) + 1 : 1;
   }
 
   const handleClick = () => {
-    let id = ''
+    let newId = 0;
     setRows((oldRows) => {
+      newId = autoIncrementId([...oldRows])
       const newRow = oldRows.find((row) => row.isNew)
       let updatedRows = oldRows;
       if (newRow && newRow.isNew)
         updatedRows = oldRows.filter((row) => row.id !== newRow.id)
       return [
         ...updatedRows,
-        { id, name: '', email: '', password: '', isNew: true},
+        { id: newId, name: '', email: '', password: '', isNew: true},
       ]
     });
     setRowModesModel((oldModel) => {
@@ -66,7 +70,7 @@ function EditToolbar(props: GridSlotProps['toolbar']) {
         newModel[editingRowId] = { mode: GridRowModes.View, ignoreModifications: true };
       return {
         ...newModel,
-        [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
+        [newId]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
       }
     });
   };
@@ -145,14 +149,14 @@ export default function FullFeaturedCrudGrid() {
   };
 
   const processRowUpdate = (newRow: GridRowModel) => {
-    if (newRow.id !== '') {
-      put(newRow.id as number, newRow as Customer)
-        .then(() => console.log(`Succesfully edited customer with id ${newRow.id}`))
-        .catch((e) => console.log(e))
-    } else {
+    if (newRow.isNew) {
       const { isNew, ...newCustomer } = newRow;
       post(newCustomer as Customer)
         .then(() => console.log(`Succesfully added new customer`))
+        .catch((e) => console.log(e))
+    } else {
+      put(newRow.id as number, newRow as Customer)
+        .then(() => console.log(`Succesfully edited customer with id ${newRow.id}`))
         .catch((e) => console.log(e))
     }
 
@@ -160,6 +164,7 @@ export default function FullFeaturedCrudGrid() {
     //add new customer and add statick rows
     
     const updatedRow = { ...newRow, isNew: false };
+    setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
     return updatedRow;
   };
 
