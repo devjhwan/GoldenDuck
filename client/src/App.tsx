@@ -1,217 +1,243 @@
-import React, { useState } from 'react'
-import './App.css'
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
+import * as React from 'react';
 import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
+import Tooltip from '@mui/material/Tooltip';
+import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/DeleteOutlined';
+import SaveIcon from '@mui/icons-material/Save';
+import CancelIcon from '@mui/icons-material/Close';
+import {
+  GridRowModes,
+  DataGrid,
+  GridActionsCellItem,
+  GridRowEditStopReasons,
+  Toolbar,
+  ToolbarButton,
+} from '@mui/x-data-grid';
+import type {
+  GridRowsProp,
+  GridRowModesModel,
+  GridColDef,
+  GridEventListener,
+  GridRowId,
+  GridRowModel,
+  GridSlotProps,
+} from '@mui/x-data-grid';
+import {
+  randomCreatedDate,
+  randomTraderName,
+  randomId,
+  randomArrayItem,
+} from '@mui/x-data-grid-generator';
 
-let customers = [
-    {
-      "id": 0,
-      "name": "Mary Jackson",
-      "email": "maryj@abc.com",
-      "password": "maryj"
-    },
-    {
-      "id": 1,      
-      "name": "Karen Addams",
-      "email": "karena@abc.com",
-      "password": "karena"
-    },
-    {
-      "id": 2,
-      "name": "Scott Ramsey",
-      "email": "scottr@abc.com",
-      "password": "scottr"
-    }
-  ]
+const roles = ['Market', 'Finance', 'Development'];
+const randomRole = () => {
+  return randomArrayItem(roles);
+};
 
-function App() {
-  const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [customerList, setCustomerList] = useState(customers);
-  const [form, setForm] = useState({ name: '', email: '', password: '' });
-  const [error, setError] = useState('');
-
-  function handleDeleteAction() {
-    if (selectedId === null) return;
-
-    // Check if customer exists
-    const exists = customerList.some(c => c.id === selectedId);
-    if (!exists) {
-      alert("Customer not found.");
-      return;
-    }
-
-    // Remove customer and update state
-    const updatedList = customerList.filter(c => c.id !== selectedId);
-    setCustomerList(updatedList);
-    setSelectedId(null);
-    console.log(`Delete customer with id ${selectedId}`)
+const initialRows: GridRowsProp = [
+  {
+    id: 0,
+    name: randomTraderName(),
+    email: "maryj@abc.com",
+    password: "maryj"
+  },
+  {
+    id: 1,      
+    name: "Karen Addams",
+    email: "karena@abc.com",
+    password: "karena"
+  },
+  {
+    id: 2,
+    name: "Scott Ramsey",
+    email: "scottr@abc.com",
+    password: "scottr"
   }
+];
 
-  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setForm({ ...form, [e.target.name]: e.target.value });
-    setError(''); // Limpiar error al escribir
+declare module '@mui/x-data-grid' {
+  interface ToolbarPropsOverrides {
+    setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
+    setRowModesModel: (
+      newModel: (oldModel: GridRowModesModel) => GridRowModesModel,
+    ) => void;
   }
-
-  function handleSave() {
-    if (!form.name || !form.email || !form.password) {
-      setError("All fields are required.");
-      return;
-    }
-    // Check for duplicate email
-    const emailExists = customerList.some(
-      (c) => c.email.toLowerCase() === form.email.toLowerCase()
-    );
-    if (emailExists) {
-      setError("Email already exists. Please use a different email.");
-      return;
-    }
-    const newCustomer = {
-      id: customerList.length ? Math.max(...customerList.map(c => c.id)) + 1 : 0,
-      ...form,
-    };
-    setCustomerList([...customerList, newCustomer]);
-    setForm({ name: '', email: '', password: '' });
-    setError('');
-  }
-
-  return (
-    <>
-      <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
-        <Grid container spacing={2} sx={{ maxWidth: 1000 }}>
-          <Grid size={12}>
-            <Typography
-              sx={{ flex: '1 1 100%' }}
-              variant="h6"
-              id="tableTitle"
-              component="div"
-            >
-              Customers List
-            </Typography>
-            <BasicTable
-              customerList={customerList}
-              selectedId={selectedId}
-              setSelectedId={setSelectedId}
-            />
-          </Grid>
-          <Grid size={12}>
-            <AddUpdateForm form={form} onInputChange={handleInputChange} error={error}/>
-          </Grid>
-          <Grid size={12}>
-            <button className="form-button delete" onClick={ handleDeleteAction }
-                  disabled={selectedId === null} style={selectedId === null ? { pointerEvents: 'none' } : {}}>
-            Delete
-          </button>
-            <button className="form-button" onClick={handleSave}>Save</button>
-            <button className="form-button">Cancel</button>
-          </Grid>
-        </Grid>
-      </Box>
-    </>
-  )
 }
 
-function BasicTable({
-  customerList,
-  selectedId,
-  setSelectedId,
-}: {
-  customerList: typeof customers,
-  selectedId: number | null,
-  setSelectedId: (id: number | null) => void
-}) {
-  function handleRowClick(id: number) {
-    if (selectedId !== id )
-      console.log(`selected customer with id ${id}.`)
-    else
-      console.log("Deselect customor.")
-    setSelectedId(selectedId === id ? null : id);
-  }
+function EditToolbar(props: GridSlotProps['toolbar']) {
+  const { setRows, setRowModesModel } = props;
+
+  const handleClick = () => {
+    const id = randomId();
+    setRows((oldRows) => [
+      ...oldRows,
+      { id, name: '', age: '', role: '', isNew: true },
+    ]);
+    setRowModesModel((oldModel) => ({
+      ...oldModel,
+      [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
+    }));
+  };
 
   return (
-    <TableContainer sx={{ maxWidth: 900}} component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell>ID</TableCell>
-            <TableCell>Name</TableCell>
-            <TableCell>Email</TableCell>
-            <TableCell>Password</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {customerList.map((row) => {
-            const isSelected = selectedId === row.id;
-            return (
-              <TableRow
-                key={row.name}
-                sx={{
-                  '&:last-child td, &:last-child th': { border: 0 },
-                  backgroundColor: isSelected ? '#e3f2fd' : 'inherit',
-                  cursor: 'pointer'
-                }}
-                onClick={() => handleRowClick(row.id)}
-              >
-                <TableCell component="th" scope="row" sx={isSelected ? { fontWeight: 'bold' } : {}}>
-                  {row.id}
-                </TableCell>
-                <TableCell sx={isSelected ? { fontWeight: 'bold' } : {}}>
-                  {row.name}
-                </TableCell>
-                <TableCell sx={isSelected ? { fontWeight: 'bold' } : {}}>
-                  {row.email}
-                </TableCell>
-                <TableCell sx={isSelected ? { fontWeight: 'bold' } : {}}>
-                  {row.password}
-                </TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <Toolbar>
+      <Tooltip title="Add record">
+        <ToolbarButton onClick={handleClick}>
+          <AddIcon fontSize="small" />
+        </ToolbarButton>
+      </Tooltip>
+    </Toolbar>
   );
 }
 
-// Update AddUpdateForm to use props
-function AddUpdateForm({ form, onInputChange, error }: {
-  form: { name: string; email: string; password: string },
-  onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
-  error?: string
-}) {
+export default function FullFeaturedCrudGrid() {
+  const [rows, setRows] = React.useState(initialRows);
+  const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
+
+  const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
+    if (params.reason === GridRowEditStopReasons.rowFocusOut) {
+      event.defaultMuiPrevented = true;
+    }
+  };
+
+  const handleEditClick = (id: GridRowId) => () => {
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+  };
+
+  const handleSaveClick = (id: GridRowId) => () => {
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+  };
+
+  const handleDeleteClick = (id: GridRowId) => () => {
+    setRows(rows.filter((row) => row.id !== id));
+  };
+
+  const handleCancelClick = (id: GridRowId) => () => {
+    setRowModesModel({
+      ...rowModesModel,
+      [id]: { mode: GridRowModes.View, ignoreModifications: true },
+    });
+
+    const editedRow = rows.find((row) => row.id === id);
+    if (editedRow!.isNew) {
+      setRows(rows.filter((row) => row.id !== id));
+    }
+  };
+
+  const processRowUpdate = (newRow: GridRowModel) => {
+    const updatedRow = { ...newRow, isNew: false };
+    setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
+    return updatedRow;
+  };
+
+  const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
+    setRowModesModel(newRowModesModel);
+  };
+
+  const columns: GridColDef[] = [
+    { field: 'name', headerName: 'Name', width: 180, editable: true },
+    {
+      field: 'id',
+      headerName: 'ID',
+      type: 'number',
+      width: 80,
+      align: 'left',
+      headerAlign: 'left',
+      editable: true,
+    },
+    {
+      field: 'email',
+      headerName: 'Email',
+      type: 'text',
+      width: 180,
+      editable: true,
+    },
+    {
+      field: 'password',
+      headerName: 'Password',
+      width: 220,
+      editable: true,
+      type: 'singleSelect',
+      valueOptions: ['Market', 'Finance', 'Development'],
+    },
+    {
+      field: 'actions',
+      type: 'actions',
+      headerName: 'Actions',
+      width: 100,
+      cellClassName: 'actions',
+      getActions: ({ id }) => {
+        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+
+        if (isInEditMode) {
+          return [
+            <GridActionsCellItem
+              icon={<SaveIcon />}
+              label="Save"
+              material={{
+                sx: {
+                  color: 'primary.main',
+                },
+              }}
+              onClick={handleSaveClick(id)}
+            />,
+            <GridActionsCellItem
+              icon={<CancelIcon />}
+              label="Cancel"
+              className="textPrimary"
+              onClick={handleCancelClick(id)}
+              color="inherit"
+            />,
+          ];
+        }
+
+        return [
+          <GridActionsCellItem
+            icon={<EditIcon />}
+            label="Edit"
+            className="textPrimary"
+            onClick={handleEditClick(id)}
+            color="inherit"
+          />,
+          <GridActionsCellItem
+            icon={<DeleteIcon />}
+            label="Delete"
+            onClick={handleDeleteClick(id)}
+            color="inherit"
+          />,
+        ];
+      },
+    },
+  ];
+
   return (
-    <Card sx={{ maxWidth: 400, margin: '24px auto' }}>
-      <CardContent>
-        <form>
-          <h2 className="form-title">Add / Update customer</h2>
-          <div className="form-row">
-            <label htmlFor="name" className="form-label">Name</label>
-            <input id="name" name="name" type="text" placeholder="Name" className="form-input" value={form.name} onChange={onInputChange} />
-          </div>
-          <div className="form-row">
-            <label htmlFor="email" className="form-label">Email</label>
-            <input id="email" name="email" type="email" placeholder="Email" className="form-input" value={form.email} onChange={onInputChange} />
-          </div>
-          <div className="form-row">
-            <label htmlFor="password" className="form-label">Password</label>
-            <input id="password" name="password" type="password" placeholder="Password" className="form-input" value={form.password} onChange={onInputChange} />
-          </div>
-          {error && (
-            <div style={{ color: 'red', marginTop: 8, textAlign: 'right', fontSize: 14 }}>{error}</div>
-          )}
-        </form>
-      </CardContent>
-    </Card>
+    <Box
+      sx={{
+        height: 500,
+        width: '100%',
+        '& .actions': {
+          color: 'text.secondary',
+        },
+        '& .textPrimary': {
+          color: 'text.primary',
+        },
+      }}
+    >
+      <DataGrid
+        rows={rows}
+        columns={columns}
+        editMode="row"
+        rowModesModel={rowModesModel}
+        onRowModesModelChange={handleRowModesModelChange}
+        onRowEditStop={handleRowEditStop}
+        processRowUpdate={processRowUpdate}
+        slots={{ toolbar: EditToolbar }}
+        slotProps={{
+          toolbar: { setRows, setRowModesModel },
+        }}
+        showToolbar
+      />
+    </Box>
   );
 }
-
-export default App
