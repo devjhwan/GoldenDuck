@@ -59,13 +59,17 @@ function App() {
       <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
         <Grid container spacing={2} >
           <Grid size={12}>
+            
             <Typography
               sx={{ flex: '1 1 100%' }}
               variant="h6"
               id="tableTitle"
               component="div"
             >
-              Customers List
+              Customers List &nbsp;
+              <a href='https://keepthescore.com/board/fphfkmgvshcvr/?public=true' target='_blank' rel='noreferrer'>
+                <img src="./src/assets/duck.png" className="logo" alt="logo" style={{width: 30, height: 'auto'}}/>
+              </a>
             </Typography>
             <BasicTable
               customerList={customerList}
