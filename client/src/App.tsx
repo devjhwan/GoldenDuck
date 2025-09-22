@@ -28,6 +28,8 @@ import type {
 import Typography from '@mui/material/Typography';
 import { getAll, deleteById, post, put } from './memdb'
 import type { Customer } from './memdb'
+import { createTheme, ThemeProvider } from "@mui/material";
+
 
 declare module '@mui/x-data-grid' {
   interface ToolbarPropsOverrides {
@@ -37,6 +39,21 @@ declare module '@mui/x-data-grid' {
     ) => void;
   }
 }
+
+
+const myTheme = createTheme({
+  components: {
+    MuiDataGrid: {
+      styleOverrides: {
+        row: {
+          "&.Mui-selected": {
+            fontWeight: "bold",
+          }
+        }
+      }
+    }
+  }
+});
 
 function EditToolbar(props: GridSlotProps['toolbar']) {
   const { setRows, setRowModesModel } = props;
@@ -249,6 +266,7 @@ export default function FullFeaturedCrudGrid() {
   ];
 
   return (
+    <ThemeProvider theme={myTheme}>
     <Box
       sx={{
         height: 400,
@@ -281,7 +299,19 @@ export default function FullFeaturedCrudGrid() {
              overflow: 'visible !important'
           }
         }}
-      />
+      >
+    {/* <DataGrid.Resources>
+      <Style TargetType="{x:Type dg:DataGridCell}">
+        <Style.Triggers>
+          <Trigger Property="dg:DataGridCell.IsSelected" Value="True">
+            <Setter Property="Background" Value="#CCDAFF" />
+          </Trigger>
+        </Style.Triggers>
+      </Style>
+    </DataGrid.Resources> */}
+      </DataGrid>
     </Box>
+    </ThemeProvider>
+
   );
 }
