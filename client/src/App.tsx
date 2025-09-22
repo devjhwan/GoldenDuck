@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './App.css'
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -13,6 +13,7 @@ import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import { getAll } from './memdb'
+import type { Customer } from './memdb'
 
 let customers = [
     {
@@ -36,11 +37,16 @@ let customers = [
   ]
 
 function App() {
-  console.log(getAll())
   const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [customerList, setCustomerList] = useState(customers);
+  const [customerList, setCustomerList] = useState<Customer[]>([]);
   const [form, setForm] = useState({ name: '', email: '', password: '' });
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    getAll()
+      .then(data => setCustomerList(data))
+      .catch(() => setCustomerList([]));
+  }, []);
 
   function handleDeleteAction() {
     if (selectedId === null) return;
