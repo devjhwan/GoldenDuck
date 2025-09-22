@@ -1,2 +1,2 @@
-git commit -m "" -m "Co-Authored-By: Pilar Medina <pilarmedina2000@gmail.com>
+git commit -m "implemented server function to frontend" -m "Co-Authored-By: Pilar Medina <pilarmedina2000@gmail.com>
 Co-Authored-By: Omar Ninach <omar.ninach@adp.com>"

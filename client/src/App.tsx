@@ -23,32 +23,9 @@ import type {
   GridRowModel,
   GridSlotProps,
 } from '@mui/x-data-grid';
-import {
-  randomTraderName,
-  randomId,
-} from '@mui/x-data-grid-generator';
 import Typography from '@mui/material/Typography';
-
-const initialRows: GridRowsProp = [
-  {
-    id: 0,
-    name: randomTraderName(),
-    email: "maryj@abc.com",
-    password: "maryj"
-  },
-  {
-    id: 1,      
-    name: randomTraderName(),
-    email: "karena@abc.com",
-    password: "karena"
-  },
-  {
-    id: 2,
-    name: randomTraderName(),
-    email: "scottr@abc.com",
-    password: "scottr"
-  }
-];
+import { getAll, deleteById, post, put } from './memdb'
+import type { Customer } from './memdb'
 
 declare module '@mui/x-data-grid' {
   interface ToolbarPropsOverrides {
@@ -63,10 +40,10 @@ function EditToolbar(props: GridSlotProps['toolbar']) {
   const { setRows, setRowModesModel } = props;
 
   const handleClick = () => {
-    const id = randomId();
+    let id = ''
     setRows((oldRows) => [
       ...oldRows,
-      { id, name: '', age: '', role: '', isNew: true },
+      { id, name: '', email: '', password: '', isNew: true },
     ]);
     setRowModesModel((oldModel) => ({
       ...oldModel,
@@ -90,8 +67,23 @@ function EditToolbar(props: GridSlotProps['toolbar']) {
 }
 
 export default function FullFeaturedCrudGrid() {
-  const [rows, setRows] = React.useState(initialRows);
+  const [reload, setReload] = React.useState({});
+  const [rows, setRows] = React.useState<GridRowsProp>([]);
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
+
+  React.useEffect(() => {
+    getAll()
+      .then((data) => setRows(data as GridRowsProp))
+      .catch(() => setRows([]))
+  }, [])
+
+  React.useEffect(() => {
+    if (reload) {
+      getAll()
+        .then((data) => setRows(data as GridRowsProp))
+        .catch(() => setRows([]))
+    }
+  }, [reload]);
 
   const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
@@ -108,6 +100,8 @@ export default function FullFeaturedCrudGrid() {
   };
 
   const handleDeleteClick = (id: GridRowId) => () => {
+    deleteById(id as number)
+      .then(() => console.log(`Delete customer with id ${id}`))
     setRows(rows.filter((row) => row.id !== id));
   };
 
@@ -124,8 +118,23 @@ export default function FullFeaturedCrudGrid() {
   };
 
   const processRowUpdate = (newRow: GridRowModel) => {
+    if (newRow.id !== '') {
+      put(newRow.id as number, newRow as Customer)
+        .then(() => console.log(`Succesfully edited customer with id ${newRow.id}`))
+        .catch((e) => console.log(e))
+    } else {
+      post(newRow as Customer)
+        .then(() => {
+          console.log(`Succesfully added new customer`)
+          setReload(true);
+        })
+        .catch((e) => console.log(e))
+    }
+
+    //add new customer and call the backand all data again
+    //add new customer and add statick rows
+    
     const updatedRow = { ...newRow, isNew: false };
-    setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
     return updatedRow;
   };
 
