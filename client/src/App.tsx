@@ -41,6 +41,10 @@ declare module '@mui/x-data-grid' {
 function EditToolbar(props: GridSlotProps['toolbar']) {
   const { setRows, setRowModesModel } = props;
 
+  const getMaxId = (rows) => {
+    return 
+  }
+
   const handleClick = () => {
     let id = ''
     setRows((oldRows) => {
@@ -83,7 +87,6 @@ function EditToolbar(props: GridSlotProps['toolbar']) {
 }
 
 export default function FullFeaturedCrudGrid() {
-  const [reload, setReload] = React.useState({});
   const [rows, setRows] = React.useState<GridRowsProp>([]);
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
   const [passwordVisibility, setPasswordVisibility] = React.useState<{ [key: number]: boolean }>({});
@@ -93,14 +96,6 @@ export default function FullFeaturedCrudGrid() {
       .then((data) => setRows(data as GridRowsProp))
       .catch(() => setRows([]))
   }, [])
-
-  React.useEffect(() => {
-    if (reload) {
-      getAll()
-        .then((data) => setRows(data as GridRowsProp))
-        .catch(() => setRows([]))
-    }
-  }, [reload]);
 
   const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
@@ -157,10 +152,7 @@ export default function FullFeaturedCrudGrid() {
     } else {
       const { isNew, ...newCustomer } = newRow;
       post(newCustomer as Customer)
-        .then(() => {
-          console.log(`Succesfully added new customer`)
-          setReload(true);
-        })
+        .then(() => console.log(`Succesfully added new customer`))
         .catch((e) => console.log(e))
     }
 
