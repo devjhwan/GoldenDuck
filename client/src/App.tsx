@@ -6,6 +6,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import {
   GridRowModes,
   DataGrid,
@@ -43,7 +45,7 @@ function EditToolbar(props: GridSlotProps['toolbar']) {
     let id = ''
     setRows((oldRows) => [
       ...oldRows,
-      { id, name: '', email: '', password: '', isNew: true },
+      { id, name: '', email: '', password: '', isNew: true},
     ]);
     setRowModesModel((oldModel) => ({
       ...oldModel,
@@ -54,7 +56,7 @@ function EditToolbar(props: GridSlotProps['toolbar']) {
   return (
     <Toolbar>
     <Typography fontWeight="bold" sx={{ flex: 1, mx: 0.5 }}>
-        Customers Table
+        Customer List
       </Typography>
 
       <Tooltip title="Add customer">
@@ -70,6 +72,7 @@ export default function FullFeaturedCrudGrid() {
   const [reload, setReload] = React.useState({});
   const [rows, setRows] = React.useState<GridRowsProp>([]);
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
+  const [passwordVisibility, setPasswordVisibility] = React.useState<{ [key: number]: boolean }>({});
 
   React.useEffect(() => {
     getAll()
@@ -123,7 +126,8 @@ export default function FullFeaturedCrudGrid() {
         .then(() => console.log(`Succesfully edited customer with id ${newRow.id}`))
         .catch((e) => console.log(e))
     } else {
-      post(newRow as Customer)
+      const { isNew, ...newCustomer } = newRow;
+      post(newCustomer as Customer)
         .then(() => {
           console.log(`Succesfully added new customer`)
           setReload(true);
@@ -140,6 +144,13 @@ export default function FullFeaturedCrudGrid() {
 
   const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
     setRowModesModel(newRowModesModel);
+  };
+
+  const handleTogglePassword = (id: number) => {
+    setPasswordVisibility((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
   };
 
   const columns: GridColDef[] = [
@@ -168,6 +179,24 @@ export default function FullFeaturedCrudGrid() {
       headerName: 'Password',
       width: 220,
       editable: true,
+      renderCell: (params) => {
+        const id = params.row.id;
+        const isVisible = passwordVisibility[id];
+        return (
+          <span style={{ display: 'flex', alignItems: 'center' }}>
+            <span style={{ marginRight: 8 }}>
+              {isVisible ? params.value : '•'.repeat(10)}
+            </span>
+            <span
+              style={{ cursor: 'pointer' }}
+              onClick={() => handleTogglePassword(id)}
+              title={isVisible ? 'Hide password' : 'Show password'}
+            >
+              {isVisible ? <VisibilityOffIcon fontSize="small" /> : <VisibilityIcon fontSize="small" />}
+            </span>
+          </span>
+        );
+      }
     },
     {
       field: 'actions',
