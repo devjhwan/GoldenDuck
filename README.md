@@ -1,6 +1,7 @@
-# GoldenDuck
+# GoldenDuck <img width="40" height="40" alt="duck" src="https://github.com/user-attachments/assets/945a561e-59d0-48a7-9950-4028e8397ba8" />
 
 ## Overview
+
 
 GoldenDuck is a customer management platform designed for practicing full-stack development. It features a modern React + TypeScript frontend and a RESTful backend API. The app allows users to view, add, edit, and delete customer records, as well as sign in and sign out.
 
