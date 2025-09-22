@@ -57,7 +57,7 @@ function App() {
   return (
     <>
       <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
-        <Grid container spacing={2} sx={{ maxWidth: 1000 }}>
+        <Grid container spacing={2} >
           <Grid size={12}>
             <Typography
               sx={{ flex: '1 1 100%' }}
@@ -81,8 +81,6 @@ function App() {
                   disabled={selectedId === null} style={selectedId === null ? { pointerEvents: 'none' } : {}}>
             Delete
           </button>
-            <button className="form-button">Save</button>
-            <button className="form-button">Cancel</button>
           </Grid>
         </Grid>
       </Box>

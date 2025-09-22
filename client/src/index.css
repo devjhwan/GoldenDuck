@@ -1,3 +1,6 @@
-body, html {
-  font-family: 'Century Gothic', Arial, Helvetica, sans-serif;
+body, html,
+*, button, input, select, textarea,
+.MuiTypography-root,
+.MuiTableCell-root {
+  font-family: 'Century Gothic', 'Roboto', Arial, Helvetica, sans-serif !important;
 }

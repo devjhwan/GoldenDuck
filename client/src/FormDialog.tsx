@@ -16,7 +16,7 @@ export default function FormDialog(props: any) {
 
   return (
     <React.Fragment>
-        <button className="form-button" onClick={ handleOpen }>Add</button>
+      <button className="form-button" onClick={ handleOpen }>Add</button>
       <Dialog open={open} onClose={handleClose}>
         <DialogContent>
           <AddForm
