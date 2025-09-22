@@ -12,6 +12,7 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
+import { getAll } from './memdb'
 
 let customers = [
     {
@@ -35,6 +36,7 @@ let customers = [
   ]
 
 function App() {
+  console.log(getAll())
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [customerList, setCustomerList] = useState(customers);
   const [form, setForm] = useState({ name: '', email: '', password: '' });

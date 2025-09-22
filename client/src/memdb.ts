@@ -1,17 +1,14 @@
-const SERVER_API = process.env.SERVER_API;
+const SERVER_API: string = import.meta.env.VITE_SERVER_API;
 
-//
-// Customer type for reference:
-// {
-//   id: number,
-//   name: string,
-//   email: string,
-//   password: string
-// }
-//
+export type Customer = {
+  id: number;
+  name: string;
+  email: string;
+  password: string;
+};
 
 // Get all customers
-function getAll() {
+export function getAll(): Promise<Customer[]> {
   return fetch(SERVER_API)
     .then(res => {
       if (!res.ok) throw new Error("Failed to fetch customers");
@@ -20,7 +17,7 @@ function getAll() {
 }
 
 // Get customer by id
-function get(id) {
+export function get(id: number): Promise<Customer | null> {
   return fetch(`${SERVER_API}/${id}`)
     .then(res => {
       if (!res.ok) return null;
@@ -29,7 +26,7 @@ function get(id) {
 }
 
 // Delete customer by id
-function deleteById(id) {
+export function deleteById(id: number): Promise<void> {
   return fetch(`${SERVER_API}/${id}`, { method: "DELETE" })
     .then(res => {
       if (!res.ok) throw new Error("Failed to delete customer");
@@ -37,7 +34,7 @@ function deleteById(id) {
 }
 
 // Add new customer
-function post(item) {
+export function post(item: Omit<Customer, "id">): Promise<Customer> {
   return fetch(SERVER_API, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -50,7 +47,7 @@ function post(item) {
 }
 
 // Update customer
-function put(id, item) {
+export function put(id: number, item: Customer): Promise<Customer> {
   return fetch(`${SERVER_API}/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
@@ -61,12 +58,3 @@ function put(id, item) {
       return res.json();
     });
 }
-
-// Export functions for use in other files
-module.exports = {
-  getAll,
-  get,
-  deleteById,
-  post,
-  put
-};
