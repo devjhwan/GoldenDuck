@@ -43,14 +43,28 @@ function EditToolbar(props: GridSlotProps['toolbar']) {
 
   const handleClick = () => {
     let id = ''
-    setRows((oldRows) => [
-      ...oldRows,
-      { id, name: '', email: '', password: '', isNew: true},
-    ]);
-    setRowModesModel((oldModel) => ({
-      ...oldModel,
-      [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
-    }));
+    setRows((oldRows) => {
+      const newRow = oldRows.find((row) => row.isNew)
+      let updatedRows = oldRows;
+      if (newRow && newRow.isNew)
+        updatedRows = oldRows.filter((row) => row.id !== newRow.id)
+      return [
+        ...updatedRows,
+        { id, name: '', email: '', password: '', isNew: true},
+      ]
+    });
+    setRowModesModel((oldModel) => {
+      const editingRowId = Object.keys(oldModel).find(
+        (id) => oldModel[id]?.mode === GridRowModes.Edit
+      );
+      let newModel = { ...oldModel };
+      if (editingRowId)
+        newModel[editingRowId] = { mode: GridRowModes.View, ignoreModifications: true };
+      return {
+        ...newModel,
+        [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
+      }
+    });
   };
 
   return (
@@ -95,7 +109,22 @@ export default function FullFeaturedCrudGrid() {
   };
 
   const handleEditClick = (id: GridRowId) => () => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+    console.log('edit')
+    const newRow = rows.find((row) => row.isNew)
+    if (newRow && newRow.isNew)
+      setRows(rows.filter((row) => row.id !== newRow.id))
+    setRowModesModel((oldModel) => {
+      const editingRowId = Object.keys(oldModel).find(
+        (id) => oldModel[id]?.mode === GridRowModes.Edit
+      );
+      let newModel = { ...oldModel };
+      if (editingRowId)
+        newModel[editingRowId] = { mode: GridRowModes.View, ignoreModifications: true };
+      return {
+        ...newModel,
+        [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
+      }
+    });
   };
 
   const handleSaveClick = (id: GridRowId) => () => {
