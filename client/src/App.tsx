@@ -24,16 +24,9 @@ import type {
   GridSlotProps,
 } from '@mui/x-data-grid';
 import {
-  randomCreatedDate,
   randomTraderName,
   randomId,
-  randomArrayItem,
 } from '@mui/x-data-grid-generator';
-
-const roles = ['Market', 'Finance', 'Development'];
-const randomRole = () => {
-  return randomArrayItem(roles);
-};
 
 const initialRows: GridRowsProp = [
   {
@@ -44,13 +37,13 @@ const initialRows: GridRowsProp = [
   },
   {
     id: 1,      
-    name: "Karen Addams",
+    name: randomTraderName(),
     email: "karena@abc.com",
     password: "karena"
   },
   {
     id: 2,
-    name: "Scott Ramsey",
+    name: randomTraderName(),
     email: "scottr@abc.com",
     password: "scottr"
   }
@@ -143,13 +136,16 @@ export default function FullFeaturedCrudGrid() {
       width: 80,
       align: 'left',
       headerAlign: 'left',
-      editable: true,
+      editable: false,
     },
-    { field: 'name', headerName: 'Name', width: 180, editable: true },
+    { 
+      field: 'name', 
+      headerName: 'Name', 
+      width: 180, 
+      editable: true },
     {
       field: 'email',
       headerName: 'Email',
-      type: 'text',
       width: 180,
       editable: true,
     },
@@ -158,8 +154,6 @@ export default function FullFeaturedCrudGrid() {
       headerName: 'Password',
       width: 220,
       editable: true,
-      // type: 'singleSelect',
-      // valueOptions: ['Market', 'Finance', 'Development'],
     },
     {
       field: 'actions',
