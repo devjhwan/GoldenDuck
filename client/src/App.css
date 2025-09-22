@@ -1,7 +1,7 @@
 .form-title {
   text-align: center;
   margin-bottom: 24px;
-  color: #e4b10b;
+  color: #000000;
 }
 
 .form-row {
@@ -63,4 +63,14 @@
   background-color: #d32f2f;
   color: #fff;
   cursor: not-allowed;
+}
+
+.addform-save-btn {
+  background-color: #1976d2 !important;
+  color: #fff !important;
+}
+
+.addform-cancel-btn {
+  background-color: #bdbdbd !important;
+  color: #ffffff !important;
 }
