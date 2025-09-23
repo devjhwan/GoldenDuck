@@ -30,7 +30,7 @@ export default function EditToolbar(props: GridSlotProps['toolbar']) {
   };
 
   const handleClick = async () => {
-    let newId = await autoIncrementId();
+    const newId = await autoIncrementId();
     setRows((oldRows) => {
       const newRow = oldRows.find((row) => row.isNew)
       let updatedRows = oldRows;
@@ -45,7 +45,7 @@ export default function EditToolbar(props: GridSlotProps['toolbar']) {
       const editingRowId = Object.keys(oldModel).find(
         (id) => oldModel[id]?.mode === GridRowModes.Edit
       );
-      let newModel = { ...oldModel };
+      const newModel = { ...oldModel };
       if (editingRowId)
         newModel[editingRowId] = { mode: GridRowModes.View, ignoreModifications: true };
       return {
