@@ -16,6 +16,14 @@ export function getAll(): Promise<Customer[]> {
     });
 }
 
+export function getPaged(page: number, limit: number = 100): Promise<Customer[]> {
+  return fetch(`${SERVER_API}?page=${page}&limit=${limit}`)
+    .then(res => {
+      if (!res.ok) throw new Error("Failed to fetch paged customers");
+      return res.json();
+    });
+}
+
 // Get customer by id
 export function get(id: number): Promise<Customer | null> {
   return fetch(`${SERVER_API}/${id}`)
