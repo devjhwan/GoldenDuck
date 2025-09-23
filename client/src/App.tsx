@@ -32,6 +32,8 @@ import type {
 import Typography from '@mui/material/Typography';
 import { getAll, deleteById, post, put } from './memdb'
 import type { Customer } from './memdb'
+import { createTheme, ThemeProvider } from "@mui/material";
+
 
 declare module '@mui/x-data-grid' {
   interface ToolbarPropsOverrides {
@@ -41,6 +43,21 @@ declare module '@mui/x-data-grid' {
     ) => void;
   }
 }
+
+
+const myTheme = createTheme({
+  components: {
+    MuiDataGrid: {
+      styleOverrides: {
+        row: {
+          "&.Mui-selected": {
+            fontWeight: "bold",
+          }
+        }
+      }
+    }
+  }
+});
 
 function EditToolbar(props: GridSlotProps['toolbar']) {
   const { setRows, setRowModesModel } = props;
@@ -367,6 +384,7 @@ className="textPrimary"
   ];
 
   return (
+    <ThemeProvider theme={myTheme}>
     <Box
       sx={{
         height: 400,
@@ -442,5 +460,7 @@ className="textPrimary"
         </Alert>
       </Snackbar>
     </Box>
+    </ThemeProvider>
+
   );
 }
