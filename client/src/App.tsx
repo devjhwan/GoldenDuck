@@ -8,6 +8,9 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+
 import {
   GridRowModes,
   DataGrid,
@@ -94,6 +97,30 @@ export default function FullFeaturedCrudGrid() {
   const [rows, setRows] = React.useState<GridRowsProp>([]);
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
   const [passwordVisibility, setPasswordVisibility] = React.useState<{ [key: number]: boolean }>({});
+  const [snackbar, setSnackbar] = React.useState<{ open: boolean; message: string }>({
+    open: false,
+    message: '',
+  });
+  const [successSnackbar, setSuccessSnackbar] = React.useState<{ open: boolean; message: string }>({
+    open: false,
+    message: '',
+  });
+  const [deleteSnackbar, setDeleteSnackbar] = React.useState<{ open: boolean; id: number | null }>({
+    open: false,
+    id: null,
+  });
+
+  const handleSnackbarClose = () => {
+    setSnackbar({ open: false, message: '' });
+  };
+
+  const handleSuccessSnackbarClose = () => {
+    setSuccessSnackbar({ open: false, message: '' });
+  };
+
+  const handleDeleteSnackbarClose = () => {
+    setDeleteSnackbar({ open: false, id: null });
+  };
 
   React.useEffect(() => {
     getAll()
@@ -131,9 +158,24 @@ export default function FullFeaturedCrudGrid() {
   };
 
   const handleDeleteClick = (id: GridRowId) => () => {
-    deleteById(id as number)
-      .then(() => console.log(`Delete customer with id ${id}`))
-    setRows(rows.filter((row) => row.id !== id));
+    setDeleteSnackbar({ open: true, id: id as number });
+  };
+
+  const confirmDelete = () => {
+    if (deleteSnackbar.id !== null) {
+      deleteById(deleteSnackbar.id)
+        .then(() => {
+          console.log(`Deleted customer with id ${deleteSnackbar.id}`);
+          setRows(rows.filter((row) => row.id !== deleteSnackbar.id));
+          setSuccessSnackbar({ open: true, message: `User with ID ${deleteSnackbar.id} deleted successfully!` });
+        })
+        .catch((e) => console.log(e));
+    }
+    handleDeleteSnackbarClose();
+  };
+
+  const cancelDelete = () => {
+    handleDeleteSnackbarClose();
   };
 
   const handleCancelClick = (id: GridRowId) => () => {
@@ -149,6 +191,34 @@ export default function FullFeaturedCrudGrid() {
   };
 
   const processRowUpdate = (newRow: GridRowModel) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Email validation
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/; // Minimum 8 characters, at least one letter and one number
+
+    // Check if all fields are filled
+    if (!newRow.name || !newRow.email || !newRow.password) {
+      setSnackbar({ open: true, message: 'All fields must be filled. Please complete the form.' });
+      throw new Error('Incomplete fields.');
+    }
+
+    // Check email field
+    if (!emailRegex.test(newRow.email)) {
+      setSnackbar({ open: true, message: 'Invalid email format. Please provide a valid email address.' });
+      throw new Error('Invalid email format.');
+    }
+
+    // Check password field
+    if (!passwordRegex.test(newRow.password)) {
+      setSnackbar({ open: true, message: 'Password must be at least 8 characters long and include at least one letter and one number.' });
+      throw new Error('Invalid password format.');
+    }
+
+    // Check for duplicate email
+    const isDuplicateEmail = rows.some((row) => row.email === newRow.email && row.id !== newRow.id);
+    if (isDuplicateEmail) {
+      setSnackbar({ open: true, message: 'This email is already in use. Please use a different email address.' });
+      throw new Error('Duplicate email.');
+    }
+
     if (newRow.isNew) {
       const { isNew, ...newCustomer } = newRow;
       post(newCustomer as Customer)
@@ -160,9 +230,6 @@ export default function FullFeaturedCrudGrid() {
         .catch((e) => console.log(e))
     }
 
-    //add new customer and call the backand all data again
-    //add new customer and add statick rows
-    
     const updatedRow = { ...newRow, isNew: false };
     setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
     return updatedRow;
@@ -238,7 +305,7 @@ export default function FullFeaturedCrudGrid() {
             <GridActionsCellItem
               icon={<SaveIcon />}
               label="Save"
-              material={{
+material={{
                 sx: {
                   color: 'primary.main',
                 },
@@ -248,7 +315,7 @@ export default function FullFeaturedCrudGrid() {
             <GridActionsCellItem
               icon={<CancelIcon />}
               label="Cancel"
-              className="textPrimary"
+className="textPrimary"
               onClick={handleCancelClick(id)}
               color="inherit"
             />,
@@ -259,7 +326,6 @@ export default function FullFeaturedCrudGrid() {
           <GridActionsCellItem
             icon={<EditIcon />}
             label="Edit"
-            className="textPrimary"
             onClick={handleEditClick(id)}
             color="inherit"
           />,
@@ -293,7 +359,6 @@ export default function FullFeaturedCrudGrid() {
         editMode="row"
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}
-        onRowEditStop={handleRowEditStop}
         processRowUpdate={processRowUpdate}
         slots={{ toolbar: EditToolbar }}
         slotProps={{
@@ -308,6 +373,43 @@ export default function FullFeaturedCrudGrid() {
           }
         }}
       />
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={4000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={handleSnackbarClose} severity="error" sx={{ width: '100%' }}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={successSnackbar.open}
+        autoHideDuration={4000}
+        onClose={handleSuccessSnackbarClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={handleSuccessSnackbarClose} severity="success" sx={{ width: '100%' }}>
+          {successSnackbar.message}
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={deleteSnackbar.open}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert
+          severity="warning"
+          sx={{ width: '100%' }}
+          action={
+            <>
+              <button onClick={confirmDelete} style={{ marginRight: 8 }}>Yes</button>
+              <button onClick={cancelDelete}>No</button>
+            </>
+          }
+        >
+          Are you sure you want to delete user with ID {deleteSnackbar.id}?
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }
