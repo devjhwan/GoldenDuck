@@ -256,7 +256,7 @@ export default function FullFeaturedCrudGrid() {
                 const id = params.row.id;
                 const isVisible = passwordVisibility[id];
                 return (
-                    <span style={{ display: 'flex', alignItems: 'center' }}>
+                    <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <span style={{ marginRight: 8 }}>
                             {isVisible ? params.value : '•'.repeat(10)}
                         </span>
@@ -327,7 +327,6 @@ export default function FullFeaturedCrudGrid() {
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    width: '100vw',
                     height: 500
                 }}
             >
@@ -343,6 +342,7 @@ export default function FullFeaturedCrudGrid() {
                         '& .textPrimary': {
                             color: 'text.primary',
                         },
+                        minWidth: 870
                     }}
                 >
                     {!dataFetched ?
