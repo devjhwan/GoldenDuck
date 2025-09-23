@@ -9,9 +9,9 @@ GoldenDuck is a customer management platform designed for practicing full-stack 
 
 ## Tech Stack
 
-- **Frontend:** React, TypeScript, HTML, MUI
-- **Backend:** Node.js (REST API)
-- **Other:** Vite, CSS Modules
+- **Frontend:** React, TypeScript, HTML, CSS, MUI
+- **Backend:** Node.js, JSON server (REST API)
+- **Other:** Vite
 
 ---
 
