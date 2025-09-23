@@ -126,6 +126,7 @@ export default function FullFeaturedCrudGrid() {
                         type: 'alert',
                         id: null,
                     });
+                    setRowCount(rowCount - 1);
                 })
                 .catch((e) => console.log(e));
         }
