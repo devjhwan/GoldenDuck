@@ -29,7 +29,7 @@ import type {
   GridSlotProps,
 } from '@mui/x-data-grid';
 import Typography from '@mui/material/Typography';
-import { getAll, deleteById, post, put } from './memdb'
+import { getPaged, getLastCustomer, deleteById, post, put } from './memdb'
 import type { Customer } from './memdb'
 
 declare module '@mui/x-data-grid' {
@@ -44,17 +44,14 @@ declare module '@mui/x-data-grid' {
 function EditToolbar(props: GridSlotProps['toolbar']) {
   const { setRows, setRowModesModel } = props;
 
-  const autoIncrementId = (rows: GridRowModel[]) => {
-    const numericIds = rows
-      .map(row => Number(row.id))
-      .filter(id => !isNaN(id));
-    return numericIds.length > 0 ? Math.max(...numericIds) + 1 : 1;
-  }
+  const autoIncrementId = async () => {
+    const lastCustomer = await getLastCustomer();
+    return lastCustomer ? lastCustomer.id + 1 : 1;
+  };
 
-  const handleClick = () => {
-    let newId = 0;
+  const handleClick = async () => {
+    let newId = await autoIncrementId();
     setRows((oldRows) => {
-      newId = autoIncrementId([...oldRows])
       const newRow = oldRows.find((row) => row.isNew)
       let updatedRows = oldRows;
       if (newRow && newRow.isNew)
@@ -80,7 +77,7 @@ function EditToolbar(props: GridSlotProps['toolbar']) {
 
   return (
     <Toolbar>
-    <Typography fontWeight="bold" sx={{ flex: 1, mx: 0.5 }}>
+      <Typography fontWeight="bold" sx={{ flex: 1, mx: 0.5 }}>
         Customer List
       </Typography>
 
@@ -109,6 +106,21 @@ export default function FullFeaturedCrudGrid() {
     open: false,
     id: null,
   });
+  const [page, setPage] = React.useState(1);
+  const [pageSize, setPageSize] = React.useState(25);
+  const [rowCount, setRowCount] = React.useState(0);
+
+  React.useEffect(() => {
+    getPaged(page, pageSize)
+      .then(({ data, total }) => {
+        setRows(data as GridRowsProp);
+        setRowCount(total);
+      })
+      .catch(() => {
+        setRows([]);
+        setRowCount(0);
+      });
+  }, [page, pageSize]);
 
   const handleSnackbarClose = () => {
     setSnackbar({ open: false, message: '' });
@@ -121,12 +133,6 @@ export default function FullFeaturedCrudGrid() {
   const handleDeleteSnackbarClose = () => {
     setDeleteSnackbar({ open: false, id: null });
   };
-
-  React.useEffect(() => {
-    getAll()
-      .then((data) => setRows(data as GridRowsProp))
-      .catch(() => setRows([]))
-  }, [])
 
   const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
@@ -305,7 +311,7 @@ export default function FullFeaturedCrudGrid() {
             <GridActionsCellItem
               icon={<SaveIcon />}
               label="Save"
-material={{
+              material={{
                 sx: {
                   color: 'primary.main',
                 },
@@ -315,7 +321,7 @@ material={{
             <GridActionsCellItem
               icon={<CancelIcon />}
               label="Cancel"
-className="textPrimary"
+              className="textPrimary"
               onClick={handleCancelClick(id)}
               color="inherit"
             />,
@@ -369,10 +375,21 @@ className="textPrimary"
         columnHeaderHeight={36}
         sx={{
           '.MuiDataGrid-columnHeaderTitle': { 
-             fontWeight: 'bold !important',
-             overflow: 'visible !important'
+            fontWeight: 'bold !important',
+            overflow: 'visible !important'
           }
         }}
+        pagination
+        paginationModel={{ page: page - 1, pageSize }}
+        rowCount={rowCount}
+        paginationMode="server"
+        onPaginationModelChange={({ page, pageSize: newPageSize }) => {
+          const firstItemIndex = page * pageSize;
+          const newPage = Math.floor(firstItemIndex / newPageSize);
+          setPage(newPage + 1);
+          setPageSize(newPageSize);
+        }}
+        pageSizeOptions={[10, 25, 50, 100]}
       />
       <Snackbar
         open={snackbar.open}

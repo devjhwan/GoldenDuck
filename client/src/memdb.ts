@@ -7,21 +7,18 @@ export type Customer = {
   password: string;
 };
 
-// Get all customers
-export function getAll(): Promise<Customer[]> {
-  return fetch(SERVER_API)
-    .then(res => {
-      if (!res.ok) throw new Error("Failed to fetch customers");
-      return res.json();
-    });
-}
-
-export function getPaged(page: number, limit: number = 100): Promise<Customer[]> {
-  return fetch(`${SERVER_API}?page=${page}&limit=${limit}`)
+export function getPaged(page: number, limit: number = 10): Promise<{ data: Customer[]; total: number }> {
+  return fetch(`${SERVER_API}?_page=${page}&_limit=${limit}`, {
+    headers: { Accept: 'application/json' }
+  })
     .then(res => {
       if (!res.ok) throw new Error("Failed to fetch paged customers");
-      return res.json();
-    });
+      return Promise.all([res.json(), res.headers.get('X-Total-Count')]);
+    })
+    .then(([data, total]) => ({
+      data,
+      total: Number(total) || 0
+    }));
 }
 
 // Get customer by id
@@ -31,6 +28,17 @@ export function get(id: number): Promise<Customer | null> {
       if (!res.ok) return null;
       return res.json();
     });
+}
+
+export function getLastCustomer(): Promise<Customer | null> {
+  return fetch(`${SERVER_API}?_sort=id&_order=desc&_limit=1`, {
+    headers: { Accept: 'application/json' }
+  })
+    .then(res => {
+      if (!res.ok) throw new Error("Failed to fetch last customer");
+      return res.json();
+    })
+    .then((data: Customer[]) => data.length > 0 ? data[0] : null);
 }
 
 // Delete customer by id
