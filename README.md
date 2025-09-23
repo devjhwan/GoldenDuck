@@ -17,7 +17,6 @@ GoldenDuck is a customer management platform designed for practicing full-stack 
 
 ## Features
 
-- 🔒 **Authentication:** Sign in and sign out functionality.
 - 📋 **Customer List:** View all customers in a responsive table.
 - ✏️ **CRUD Operations:** Create, read, update, and delete customer information.
 - ⚡ **Live API Integration:** All operations are performed via REST API calls.
