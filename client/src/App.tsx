@@ -45,16 +45,24 @@ declare module '@mui/x-data-grid' {
 function EditToolbar(props: GridSlotProps['toolbar']) {
   const { setRows, setRowModesModel } = props;
 
+  const autoIncrementId = (rows: GridRowModel[]) => {
+    const numericIds = rows
+      .map(row => Number(row.id))
+      .filter(id => !isNaN(id));
+    return numericIds.length > 0 ? Math.max(...numericIds) + 1 : 1;
+  }
+
   const handleClick = () => {
-    let id = ''
+    let newId = 0;
     setRows((oldRows) => {
+      newId = autoIncrementId([...oldRows])
       const newRow = oldRows.find((row) => row.isNew)
       let updatedRows = oldRows;
       if (newRow && newRow.isNew)
         updatedRows = oldRows.filter((row) => row.id !== newRow.id)
       return [
         ...updatedRows,
-        { id, name: '', email: '', password: '', isNew: true},
+        { id: newId, name: '', email: '', password: '', isNew: true},
       ]
     });
     setRowModesModel((oldModel) => {
@@ -66,7 +74,7 @@ function EditToolbar(props: GridSlotProps['toolbar']) {
         newModel[editingRowId] = { mode: GridRowModes.View, ignoreModifications: true };
       return {
         ...newModel,
-        [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
+        [newId]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
       }
     });
   };
@@ -237,25 +245,19 @@ export default function FullFeaturedCrudGrid() {
       throw new Error('Duplicate email.');
     }
 
-    if (newRow.id !== '') {
-      put(newRow.id as number, newRow as Customer)
-        .then(() => {
-          console.log(`Successfully edited customer with id ${newRow.id}`);
-          setSuccessSnackbar({ open: true, message: `User with ID ${newRow.id} updated successfully!` });
-        })
-        .catch((e) => console.log(e));
-    } else {
+    if (newRow.isNew) {
       const { isNew, ...newCustomer } = newRow;
       post(newCustomer as Customer)
-        .then((response) => {
-          console.log(`Successfully added new customer with ID ${response.id}`);
-          setReload(true);
-          setSuccessSnackbar({ open: true, message: `New user added successfully with ID ${response.id}!` });
-        })
-        .catch((e) => console.log(e));
+        .then(() => console.log(`Succesfully added new customer`))
+        .catch((e) => console.log(e))
+    } else {
+      put(newRow.id as number, newRow as Customer)
+        .then(() => console.log(`Succesfully edited customer with id ${newRow.id}`))
+        .catch((e) => console.log(e))
     }
 
     const updatedRow = { ...newRow, isNew: false };
+    setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
     return updatedRow;
   };
 
@@ -387,6 +389,7 @@ className="textPrimary"
         editMode="row"
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}
+        onRowEditStop={handleRowEditStop}
         processRowUpdate={processRowUpdate}
         slots={{ toolbar: EditToolbar }}
         slotProps={{

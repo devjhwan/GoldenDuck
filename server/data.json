@@ -4,19 +4,19 @@
       "id": 0,
       "name": "Mary Jackson",
       "email": "maryj@abc.com",
-      "password": "maryj"
+      "password": "maryjasdf1"
     },
     {
       "id": 1,
       "name": "Karen Addams",
       "email": "karena@abc.com",
-      "password": "karena"
+      "password": "karasdf11"
     },
     {
       "id": 2,
       "name": "Scott Ramsey",
       "email": "scottr@abc.com",
-      "password": "scottr"
+      "password": "scottraasdf1"
     }
   ]
 }

@@ -9,7 +9,7 @@ GoldenDuck is a customer management platform designed for practicing full-stack 
 
 ## Tech Stack
 
-- **Frontend:** React, TypeScript, HTML, MUI DataGrid
+- **Frontend:** React, TypeScript, HTML, MUI
 - **Backend:** Node.js (REST API)
 - **Other:** Vite, CSS Modules
 
@@ -40,15 +40,20 @@ GoldenDuck is a customer management platform designed for practicing full-stack 
    ```sh
    cd client
    ```
-2. **Install dependencies:**
+2. **Configure environment variable:**  
+   Create a `.env` file in the `client` folder with the following content:
+   ```env
+   VITE_SERVER_API=http://localhost:4000/customers
+   ```
+3. **Install dependencies:**
    ```sh
    npm install
    ```
-3. **Start the development server:**
+4. **Start the development server:**
    ```sh
    npm run dev
    ```
-4. **Open the app:**
+5. **Open the app:**
    - Press `o` and `Enter` in the terminal, or  
    - Go to [http://localhost:5173/](http://localhost:5173/) in your browser.
 
