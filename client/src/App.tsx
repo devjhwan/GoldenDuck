@@ -10,6 +10,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
+import CircularProgress from '@mui/material/CircularProgress';
 
 import {
   GridRowModes,
@@ -85,8 +86,13 @@ function EditToolbar(props: GridSlotProps['toolbar']) {
   );
 }
 
+const delay = ms => new Promise(res => setTimeout(res, ms));
+
+
+
 export default function FullFeaturedCrudGrid() {
   const [reload, setReload] = React.useState({});
+  const [dataFetched , setDataFetched ] = React.useState(false);
   const [rows, setRows] = React.useState<GridRowsProp>([]);
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
   const [passwordVisibility, setPasswordVisibility] = React.useState<{ [key: number]: boolean }>({});
@@ -116,18 +122,29 @@ export default function FullFeaturedCrudGrid() {
   };
 
   React.useEffect(() => {
+    // console.log(" 1 : dataFetched : " + dataFetched)
     getAll()
       .then((data) => setRows(data as GridRowsProp))
       .catch(() => setRows([]))
+      .finally(() => {setDataFetched(true)
+    // console.log("1 : dataFetched : " + dataFetched)
+      }
+      )
   }, [])
 
   React.useEffect(() => {
     if (reload) {
+      // console.log(" 2 : dataFetched : " + dataFetched)
       getAll()
         .then((data) => setRows(data as GridRowsProp))
         .catch(() => setRows([]))
+        .finally(() => {setDataFetched(true)
+          // console.log("2 : dataFetched : " + dataFetched)
+            }
+        )
     }
   }, [reload]);
+
 
   const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
@@ -360,7 +377,11 @@ className="textPrimary"
         },
       }}
     >
-      <DataGrid
+       {!dataFetched ? <Box   display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="100vh"><CircularProgress /></Box> : 
+       <DataGrid
         rows={rows}
         columns={columns}
         editMode="row"
@@ -379,7 +400,7 @@ className="textPrimary"
              overflow: 'visible !important'
           }
         }}
-      />
+      />}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={4000}
