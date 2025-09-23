@@ -73,6 +73,13 @@ function EditToolbar(props: GridSlotProps['toolbar']) {
         [newId]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
       }
     });
+
+    setTimeout(() => {
+      const grid = document.querySelector('.MuiDataGrid-virtualScroller');
+      if (grid) {
+        grid.scrollTop = grid.scrollHeight;
+      }
+    }, 50);
   };
 
   return (
@@ -173,6 +180,7 @@ export default function FullFeaturedCrudGrid() {
         .then(() => {
           console.log(`Deleted customer with id ${deleteSnackbar.id}`);
           setRows(rows.filter((row) => row.id !== deleteSnackbar.id));
+          setRowCount(rowCount - 1);
           setSuccessSnackbar({ open: true, message: `User with ID ${deleteSnackbar.id} deleted successfully!` });
         })
         .catch((e) => console.log(e));
@@ -225,19 +233,29 @@ export default function FullFeaturedCrudGrid() {
       throw new Error('Duplicate email.');
     }
 
+    const updatedRow = { ...newRow, isNew: false };
     if (newRow.isNew) {
       const { isNew, ...newCustomer } = newRow;
       post(newCustomer as Customer)
-        .then(() => console.log(`Succesfully added new customer`))
+        .then(() => {
+          console.log(`Succesfully added new customer`);
+          getPaged(page, pageSize)
+            .then(({ data, total }) => {
+              setRows(data as GridRowsProp);
+              setRowCount(total);
+            })
+            .catch(() => {
+              setRows([]);
+              setRowCount(0);
+            });
+        })
         .catch((e) => console.log(e))
     } else {
       put(newRow.id as number, newRow as Customer)
         .then(() => console.log(`Succesfully edited customer with id ${newRow.id}`))
         .catch((e) => console.log(e))
+      setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
     }
-
-    const updatedRow = { ...newRow, isNew: false };
-    setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
     return updatedRow;
   };
 
