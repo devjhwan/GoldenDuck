@@ -10,6 +10,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
+import CircularProgress from '@mui/material/CircularProgress';
 
 import {
   GridRowModes,
@@ -31,6 +32,8 @@ import type {
 import Typography from '@mui/material/Typography';
 import { getPaged, getLastCustomer, deleteById, post, put } from './memdb'
 import type { Customer } from './memdb'
+import { createTheme, ThemeProvider } from "@mui/material";
+
 
 declare module '@mui/x-data-grid' {
   interface ToolbarPropsOverrides {
@@ -40,6 +43,21 @@ declare module '@mui/x-data-grid' {
     ) => void;
   }
 }
+
+
+const myTheme = createTheme({
+  components: {
+    MuiDataGrid: {
+      styleOverrides: {
+        row: {
+          "&.Mui-selected": {
+            fontWeight: "bold",
+          }
+        }
+      }
+    }
+  }
+});
 
 function EditToolbar(props: GridSlotProps['toolbar']) {
   const { setRows, setRowModesModel } = props;
@@ -97,7 +115,12 @@ function EditToolbar(props: GridSlotProps['toolbar']) {
   );
 }
 
+const delay = ms => new Promise(res => setTimeout(res, ms));
+
+
+
 export default function FullFeaturedCrudGrid() {
+  const [dataFetched , setDataFetched ] = React.useState(false);
   const [rows, setRows] = React.useState<GridRowsProp>([]);
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
   const [passwordVisibility, setPasswordVisibility] = React.useState<{ [key: number]: boolean }>({});
@@ -126,7 +149,8 @@ export default function FullFeaturedCrudGrid() {
       .catch(() => {
         setRows([]);
         setRowCount(0);
-      });
+      })
+      .finally(() => setDataFetched(true));
   }, [page, pageSize]);
 
   const handleSnackbarClose = () => {
@@ -365,6 +389,7 @@ export default function FullFeaturedCrudGrid() {
   ];
 
   return (
+    <ThemeProvider theme={myTheme}>
     <Box
       sx={{
         height: 400,
@@ -377,38 +402,48 @@ export default function FullFeaturedCrudGrid() {
         },
       }}
     >
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        editMode="row"
-        rowModesModel={rowModesModel}
-        onRowModesModelChange={handleRowModesModelChange}
-        onRowEditStop={handleRowEditStop}
-        processRowUpdate={processRowUpdate}
-        slots={{ toolbar: EditToolbar }}
-        slotProps={{
-          toolbar: { setRows, setRowModesModel },
-        }}
-        showToolbar
-        columnHeaderHeight={36}
-        sx={{
-          '.MuiDataGrid-columnHeaderTitle': { 
-            fontWeight: 'bold !important',
-            overflow: 'visible !important'
-          }
-        }}
-        pagination
-        paginationModel={{ page: page - 1, pageSize }}
-        rowCount={rowCount}
-        paginationMode="server"
-        onPaginationModelChange={({ page, pageSize: newPageSize }) => {
-          const firstItemIndex = page * pageSize;
-          const newPage = Math.floor(firstItemIndex / newPageSize);
-          setPage(newPage + 1);
-          setPageSize(newPageSize);
-        }}
-        pageSizeOptions={[10, 25, 50, 100]}
-      />
+      {!dataFetched ? 
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          minHeight="100vh">
+          <CircularProgress />
+        </Box>
+        : 
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          editMode="row"
+          rowModesModel={rowModesModel}
+          onRowModesModelChange={handleRowModesModelChange}
+          onRowEditStop={handleRowEditStop}
+          processRowUpdate={processRowUpdate}
+          slots={{ toolbar: EditToolbar }}
+          slotProps={{
+            toolbar: { setRows, setRowModesModel },
+          }}
+          showToolbar
+          columnHeaderHeight={36}
+          sx={{
+            '.MuiDataGrid-columnHeaderTitle': { 
+              fontWeight: 'bold !important',
+              overflow: 'visible !important'
+            }
+          }}
+          pagination
+          paginationModel={{ page: page - 1, pageSize }}
+          rowCount={rowCount}
+          paginationMode="server"
+          onPaginationModelChange={({ page, pageSize: newPageSize }) => {
+            const firstItemIndex = page * pageSize;
+            const newPage = Math.floor(firstItemIndex / newPageSize);
+            setPage(newPage + 1);
+            setPageSize(newPageSize);
+          }}
+          pageSizeOptions={[10, 25, 50, 100]}
+        />
+      }
       <Snackbar
         open={snackbar.open}
         autoHideDuration={4000}
@@ -447,5 +482,7 @@ export default function FullFeaturedCrudGrid() {
         </Alert>
       </Snackbar>
     </Box>
+    </ThemeProvider>
+
   );
 }
