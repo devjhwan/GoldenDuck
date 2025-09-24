@@ -34,7 +34,7 @@ const myTheme = createTheme({
                 row: {
                     "&.Mui-selected": {
                         fontWeight: "bold",
-                    }
+                    },
                 }
             }
         }
@@ -274,8 +274,9 @@ export default function FullFeaturedCrudGrid() {
         {
             field: 'actions',
             type: 'actions',
-            headerName: 'Actions',
-            width: 100,
+            headerName: '',
+            width: 150,
+            align: 'right',
             cellClassName: 'actions',
             getActions: ({ id }) => {
                 const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
@@ -307,13 +308,13 @@ export default function FullFeaturedCrudGrid() {
                         icon={<EditIcon />}
                         label="Edit"
                         onClick={handleEditClick(id)}
-                        color="inherit"
+                        color="primary"
                     />,
                     <GridActionsCellItem
                         icon={<DeleteIcon />}
                         label="Delete"
                         onClick={handleDeleteClick(id)}
-                        color="inherit"
+                        color="error"
                     />,
                 ];
             },
@@ -321,7 +322,7 @@ export default function FullFeaturedCrudGrid() {
     ];
 
     return (
-        <ThemeProvider theme={myTheme}>
+        // <ThemeProvider theme={myTheme}>
             <div
                 style={{
                     display: 'flex',
@@ -357,6 +358,7 @@ export default function FullFeaturedCrudGrid() {
                         <DataGrid
                             rows={rows}
                             columns={columns}
+                            getRowClassName={(params)=> params.indexRelativeToCurrentPage % 2 ==0 ? 'even-row' : 'odd-row'}
                             editMode="row"
                             rowModesModel={rowModesModel}
                             onRowModesModelChange={handleRowModesModelChange}
@@ -372,6 +374,22 @@ export default function FullFeaturedCrudGrid() {
                                 '.MuiDataGrid-columnHeaderTitle': {
                                     fontWeight: 'bold !important',
                                     overflow: 'visible !important'
+                                },
+                                '& .MuiDataGrid-columnHeader[data-field="actions"]':{
+                                    display:'none',
+                                },
+                                '& .odd-row':{
+                                    backgroundColor:'#F0F8FF',
+                                },
+                                // '& .even-row':{
+                                //     backgroundColor:'#D0F0C0',
+                                // },
+                                '& .MuiDataGrid-row:hover':{
+                                    backgroundColor:'#D3D3D3',
+                                },
+                                '& .MuiDataGrid-row.Mui-selected':{
+                                    fontWeight: 'bold',
+                                    // backgroundColor:'#D0F0C0',
                                 }
                             }}
                             pagination
@@ -395,6 +413,5 @@ export default function FullFeaturedCrudGrid() {
                     />
                 </Box>
             </div>
-        </ThemeProvider>
     );
 }

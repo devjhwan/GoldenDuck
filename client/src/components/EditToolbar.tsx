@@ -1,5 +1,7 @@
 import Tooltip from '@mui/material/Tooltip';
 import AddIcon from '@mui/icons-material/Add';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { getLastCustomer } from '../memdb';
 import type { GridRowsProp, GridRowModesModel } from '@mui/x-data-grid/models';
 import {
@@ -64,13 +66,16 @@ export default function EditToolbar(props: GridSlotProps['toolbar']) {
 
   return (
     <Toolbar>
-      <Typography fontWeight="bold" sx={{ flex: 1, mx: 0.5 }}>
+      <Typography color="primary" align="center" variant="h5" fontWeight="bold" sx={{ flex: 5, mx: 0.5 }}>
         Customer List
       </Typography>
 
       <Tooltip title="Add customer">
         <ToolbarButton onClick={handleClick}>
-          <AddIcon fontSize="small" color="primary"/>
+          {/* <AddIcon sx={{ fontSize: 26 }} color="primary"/> */}
+          {/* <AddCircleOutlineIcon sx={{ fontSize: 26 }} color="primary"/> */}
+          <AddCircleIcon sx={{ fontSize: 26 }} color="primary"/>
+          
         </ToolbarButton>
       </Tooltip>
     </Toolbar>

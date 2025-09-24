@@ -4,7 +4,7 @@ import MainDataGrid from './components/MainDataGrid';
 
 export default function App() {
   return (
-    <div>
+    <div style={{ width: '100%' }}>
       <Header />
       <main style={{ padding: '20px' }}>
         <MainDataGrid />
