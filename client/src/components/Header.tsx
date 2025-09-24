@@ -47,39 +47,38 @@ function Header() {
   };
 
   return (
-    <AppBar position="static" sx={{
+    <AppBar position="absolute" sx={{
         margin: 0,
         width: "100%",
-        left: 0,
-     }}
+      }}
     >
-      <Container>
-        <Toolbar disableGutters>
+      {/* <Container> */}
+        <Toolbar >
             <Typography>
-            <Stack direction="row" spacing={2}>
-
+              <Stack direction="row" spacing={20}>
                 {/* <img src={GoldenDuckLogo} /> */}
                 {/* <Avatar alt="Remy Sharp" src="src/img/duck.png" variant="rounded" sx={{ width: 56, height: 56 }} /> */}
+                {/* <Avatar alt="Remy Sharp" src="src/img/logo_duck.png" variant="square" sx={{ width: 80, height: 80 }} /> */}
                 <Avatar alt="Remy Sharp" src="src/img/duck_new.png" variant="square" sx={{ width: 56, height: 56 }} />
                 {/* <Avatar alt="Remy Sharp" src="src/img/duck_new.png" variant="rounded" sx={{ width: 56, height: 56 }} /> */}
-                </Stack>
+              </Stack>
             </Typography>
           <Typography
             variant="h6"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            href="customer-table"
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
+              fontFamily: 'sans-serif',
+              fontWeight: 900,
+              letterSpacing: '.0rem',
               color: 'inherit',
               textDecoration: 'none',
             }}
           >
-            GOLDEN-DUCK
+            GoldenDuck
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -100,7 +99,7 @@ function Header() {
             variant="h5"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            href="customer-table"
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },
@@ -154,7 +153,7 @@ function Header() {
             </Menu>
           </Box>
         </Toolbar>
-      </Container>
+      {/* </Container> */}
     </AppBar>
   );
 }

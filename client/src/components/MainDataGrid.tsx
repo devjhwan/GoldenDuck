@@ -25,21 +25,7 @@ import type {
 } from '@mui/x-data-grid';
 import { getPaged, deleteById, post, put } from '../memdb'
 import type { Customer } from '../memdb'
-import { createTheme, ThemeProvider } from "@mui/material";
 
-const myTheme = createTheme({
-    components: {
-        MuiDataGrid: {
-            styleOverrides: {
-                row: {
-                    "&.Mui-selected": {
-                        fontWeight: "bold",
-                    },
-                }
-            }
-        }
-    }
-});
 
 export default function FullFeaturedCrudGrid() {
     const [dataFetched, setDataFetched] = React.useState(false);
@@ -333,8 +319,8 @@ export default function FullFeaturedCrudGrid() {
             >
                 <Box
                     sx={{
-                        height: 500,
-                        width: '60%',
+                        height: 520,
+                        width: '65%',
                         justifyContent: 'center',
                         alignItems: 'center',
                         '& .actions': {
@@ -389,7 +375,7 @@ export default function FullFeaturedCrudGrid() {
                                 },
                                 '& .MuiDataGrid-row.Mui-selected':{
                                     fontWeight: 'bold',
-                                    // backgroundColor:'#D0F0C0',
+                                    backgroundColor:'#D3D3D3 !important',
                                 }
                             }}
                             pagination
