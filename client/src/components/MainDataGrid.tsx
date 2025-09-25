@@ -207,66 +207,67 @@ export default function FullFeaturedCrudGrid() {
     }));
   };
 
-  const columns: GridColDef[] = [
-    {
-      field: 'id',
-      headerName: 'ID',
-      type: 'number',
-      width: 80,
-      align: 'center',
-      headerAlign: 'center',
-      editable: false,
-    },
-    {
-      field: 'name',
-      headerName: 'Name',
-      width: 200,
-      align: 'center',
-      headerAlign: 'center',
-      editable: true
-    },
-    {
-      field: 'email',
-      headerName: 'Email',
-      width: 240,
-      align: 'center',
-      headerAlign: 'center',
-      editable: true,
-    },
-    {
-      field: 'password',
-      headerName: 'Password',
-      width: 240,
-      align: 'center',
-      headerAlign: 'center',
-      editable: true,
-      renderCell: (params) => {
-        const id = params.row.id;
-        const isVisible = passwordVisibility[id];
-        return (
-          <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <span style={{ marginRight: 8 }}>
-              {isVisible ? params.value : '•'.repeat(10)}
-            </span>
-            <span
-              style={{ cursor: 'pointer' }}
-              onClick={() => handleTogglePassword(id)}
-              title={isVisible ? 'Hide password' : 'Show password'}
-            >
-              {isVisible ? <VisibilityOffIcon fontSize="small" /> : <VisibilityIcon fontSize="small" />}
-            </span>
-          </span>
-        );
-      }
-    },
-    {
-      field: 'actions',
-      type: 'actions',
-      headerName: 'Actions',
-      width: 100,
-      cellClassName: 'actions',
-      getActions: ({ id }) => {
-        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+    const columns: GridColDef[] = [
+        {
+            field: 'id',
+            headerName: 'ID',
+            type: 'number',
+            width: 80,
+            align: 'center',
+            headerAlign: 'center',
+            editable: false,
+        },
+        {
+            field: 'name',
+            headerName: 'Name',
+            width: 200,
+            align: 'center',
+            headerAlign: 'center',
+            editable: true
+        },
+        {
+            field: 'email',
+            headerName: 'Email',
+            width: 240,
+            align: 'center',
+            headerAlign: 'center',
+            editable: true,
+        },
+        {
+            field: 'password',
+            headerName: 'Password',
+            width: 240,
+            align: 'center',
+            headerAlign: 'center',
+            editable: true,
+            renderCell: (params) => {
+                const id = params.row.id;
+                const isVisible = passwordVisibility[id];
+                return (
+                    <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <span style={{ marginRight: 8 }}>
+                            {isVisible ? params.value : '•'.repeat(10)}
+                        </span>
+                        <span
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => handleTogglePassword(id)}
+                            title={isVisible ? 'Hide password' : 'Show password'}
+                        >
+                            {isVisible ? <VisibilityOffIcon fontSize="small" /> : <VisibilityIcon fontSize="small" />}
+                        </span>
+                    </span>
+                );
+            }
+        },
+        {
+            field: 'actions',
+            type: 'actions',
+            headerName: '',
+            width: 150,
+            align: 'right',
+            cellClassName: 'actions',
+            getActions: ({ id }) => {
+                const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
         if (isInEditMode) {
           return [
@@ -290,100 +291,115 @@ export default function FullFeaturedCrudGrid() {
           ];
         }
 
-        return [
-          <GridActionsCellItem
-            icon={<EditIcon />}
-            label="Edit"
-            onClick={handleEditClick(id)}
-            color="inherit"
-          />,
-          <GridActionsCellItem
-            icon={<DeleteIcon />}
-            label="Delete"
-            onClick={handleDeleteClick(id)}
-            color="inherit"
-          />,
-        ];
-      },
-    },
-  ];
+                return [
+                    <GridActionsCellItem
+                        icon={<EditIcon />}
+                        label="Edit"
+                        onClick={handleEditClick(id)}
+                        color="primary"
+                    />,
+                    <GridActionsCellItem
+                        icon={<DeleteIcon />}
+                        label="Delete"
+                        onClick={handleDeleteClick(id)}
+                        color="error"
+                    />,
+                ];
+            },
+        },
+    ];
 
-  return (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: 500
-      }}
-    >
-      <Box
-        sx={{
-          height: 500,
-          width: '60%',
-          justifyContent: 'center',
-          alignItems: 'center',
-          '& .actions': {
-            color: 'text.secondary',
-          },
-          '& .textPrimary': {
-            color: 'text.primary',
-          },
-          minWidth: 870,
-          '& .MuiDataGrid-row.Mui-selected': {
-            fontWeight: 'bold',
-          },
-        }}
-      >
-        {!dataFetched ?
-          <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            minHeight="100vh">
-            <CircularProgress />
-          </Box>
-          :
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            editMode="row"
-            rowModesModel={rowModesModel}
-            onRowModesModelChange={handleRowModesModelChange}
-            onRowEditStop={handleRowEditStop}
-            processRowUpdate={processRowUpdate}
-            slots={{ toolbar: EditToolbar }}
-            slotProps={{
-              toolbar: { setRows, setRowModesModel },
-            }}
-            showToolbar
-            columnHeaderHeight={36}
-            sx={{
-              '.MuiDataGrid-columnHeaderTitle': {
-                fontWeight: 'bold !important',
-                overflow: 'visible !important'
-              }
-            }}
-            pagination
-            paginationModel={{ page: page - 1, pageSize }}
-            rowCount={rowCount}
-            paginationMode="server"
-            onPaginationModelChange={({ page, pageSize: newPageSize }) => {
-              const firstItemIndex = page * pageSize;
-              const newPage = Math.floor(firstItemIndex / newPageSize);
-              setPage(newPage + 1);
-              setPageSize(newPageSize);
-            }}
-            pageSizeOptions={[10, 25, 50, 100]}
-          />
-        }
-        <SnackbarManager
-          snackbar={snackbar as SnackbarConfig}
-          onClose={handleSnackbarClose}
-          onDeleteConfirm={confirmDelete}
-          onDeleteCancel={cancelDelete}
-        />
-      </Box>
-    </div>
-  );
+    return (
+        // <ThemeProvider theme={myTheme}>
+            <div
+                style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: 500
+                }}
+            >
+                <Box
+                    sx={{
+                        height: 520,
+                        width: '65%',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        '& .actions': {
+                            color: 'text.secondary',
+                        },
+                        '& .textPrimary': {
+                            color: 'text.primary',
+                        },
+                        minWidth: 870
+                    }}
+                >
+                    {!dataFetched ?
+                        <Box
+                            display="flex"
+                            justifyContent="center"
+                            alignItems="center"
+                            minHeight="100vh">
+                            <CircularProgress />
+                        </Box>
+                        :
+                        <DataGrid
+                            rows={rows}
+                            columns={columns}
+                            getRowClassName={(params)=> params.indexRelativeToCurrentPage % 2 ==0 ? 'even-row' : 'odd-row'}
+                            editMode="row"
+                            rowModesModel={rowModesModel}
+                            onRowModesModelChange={handleRowModesModelChange}
+                            onRowEditStop={handleRowEditStop}
+                            processRowUpdate={processRowUpdate}
+                            slots={{ toolbar: EditToolbar }}
+                            slotProps={{
+                                toolbar: { setRows, setRowModesModel },
+                            }}
+                            showToolbar
+                            columnHeaderHeight={36}
+                            sx={{
+                                '.MuiDataGrid-columnHeaderTitle': {
+                                    fontWeight: 'bold !important',
+                                    overflow: 'visible !important'
+                                },
+                                '& .MuiDataGrid-columnHeader[data-field="actions"]':{
+                                    display:'none',
+                                },
+                                '& .odd-row':{
+                                    backgroundColor:'#F0F8FF',
+                                },
+                                // '& .even-row':{
+                                //     backgroundColor:'#D0F0C0',
+                                // },
+                                '& .MuiDataGrid-row:hover':{
+                                    backgroundColor:'#D3D3D3',
+                                },
+                                '& .MuiDataGrid-row.Mui-selected':{
+                                    fontWeight: 'bold',
+                                    backgroundColor:'#D3D3D3 !important',
+                                }
+                            }}
+                            pagination
+                            paginationModel={{ page: page - 1, pageSize }}
+                            rowCount={rowCount}
+                            paginationMode="server"
+                            onPaginationModelChange={({ page, pageSize: newPageSize }) => {
+                                const firstItemIndex = page * pageSize;
+                                const newPage = Math.floor(firstItemIndex / newPageSize);
+                                setPage(newPage + 1);
+                                setPageSize(newPageSize);
+                            }}
+                            pageSizeOptions={[10, 25, 50, 100]}
+                        />
+                    }
+                    <SnackbarManager
+                        snackbar={snackbar as any}
+                        onClose={handleSnackbarClose}
+                        onDeleteConfirm={confirmDelete}
+                        onDeleteCancel={cancelDelete}
+                    />
+                </Box>
+            </div>
+    );
 }
