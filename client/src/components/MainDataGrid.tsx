@@ -9,7 +9,6 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import CircularProgress from '@mui/material/CircularProgress';
 import EditToolbar from './EditToolbar';
 import SnackbarManager from './SnackbarManager';
-import type { SnackbarConfig } from './SnackbarManager'
 import {
   GridRowModes,
   DataGrid,
@@ -313,15 +312,15 @@ export default function FullFeaturedCrudGrid() {
         // <ThemeProvider theme={myTheme}>
             <div
                 style={{
+                    margin: '10vh',
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    height: 500
                 }}
             >
                 <Box
                     sx={{
-                        height: 800,
+                        height: '80vh',
                         width: '65%',
                         justifyContent: 'center',
                         alignItems: 'center',
@@ -331,7 +330,7 @@ export default function FullFeaturedCrudGrid() {
                         '& .textPrimary': {
                             color: 'text.primary',
                         },
-                        minWidth: 870
+                        minWidth: 950
                     }}
                 >
                     {!dataFetched ?

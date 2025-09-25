@@ -7,7 +7,7 @@ export default function App() {
   return (
     <div style={{ width: '100%' }}>
       <Header />
-      <main style={{ padding: '250px' }}>
+      <main>
         <MainDataGrid />
       </main>
       <Footer />

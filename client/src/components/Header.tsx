@@ -39,7 +39,7 @@ function Header() {
   };
 
   return (
-    <AppBar position="absolute" sx={{
+    <AppBar sx={{
         margin: 0,
         width: "100%",
       }}
