@@ -187,7 +187,7 @@ export default function FullFeaturedCrudGrid() {
       put(newRow.id as number, newRow as Customer)
         .then(() => {
           console.log(`Successfully edited customer with id ${newRow.id}`);
-          setSnackbar({ open: true, message: `User with ID ${newRow.id} successfully added!`, severity: 'success', type: 'alert', id: null });
+          setSnackbar({ open: true, message: `User with ID ${newRow.id} successfully edited!`, severity: 'success', type: 'alert', id: null });
         })
         .catch((e) => console.log(e))
       setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
@@ -376,7 +376,7 @@ export default function FullFeaturedCrudGrid() {
                                 },
                                 '& .MuiDataGrid-row.Mui-selected':{
                                     fontWeight: 'bold',
-                                    backgroundColor:'#D3D3D3 !important',
+                                    backgroundColor:'#FEE67F !important',
                                 }
                             }}
                             pagination

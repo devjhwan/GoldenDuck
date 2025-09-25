@@ -1,0 +1,118 @@
+{
+  "customers": [
+    {
+      "id": 1,
+      "name": "Eugene",
+      "email": "egalea0@technorati.com",
+      "password": "cN5#k,,,zJ"
+    },
+    {
+      "id": 2,
+      "name": "Alric",
+      "email": "alemasney1@list-manage.com",
+      "password": "eA4@|Gq%#"
+    },
+    {
+      "id": 3,
+      "name": "Nertie",
+      "email": "npohlak2@marketwatch.com",
+      "password": "jW9=i7or"
+    },
+    {
+      "id": 5,
+      "name": "Bron",
+      "email": "bcrinkley4@theguardian.com",
+      "password": "rW5\"d!wnvB1BskTY"
+    },
+    {
+      "id": 7,
+      "name": "Dix",
+      "email": "dpaullin6@fda.gov",
+      "password": "jW3{vC=e@ie"
+    },
+    {
+      "id": 9,
+      "name": "Ximenez",
+      "email": "xlawtie8@yandex.ru",
+      "password": "sY2(K_5F@IIas!n="
+    },
+    {
+      "id": 10,
+      "name": "Leroy",
+      "email": "lmcgennis9@unc.edu",
+      "password": "bX4>c5WI`,4+bd"
+    },
+    {
+      "id": 11,
+      "name": "Elfrieda",
+      "email": "epetraneka@hatena.ne.jp",
+      "password": "vL0~UO.6v?t16@/"
+    },
+    {
+      "id": 12,
+      "name": "Ruthann",
+      "email": "rkulvearb@amazon.co.uk",
+      "password": "hI1.7BmP#P6az*<C"
+    },
+    {
+      "id": 13,
+      "name": "Claire",
+      "email": "cbrazerc@themeforest.net",
+      "password": "yI2<MB|2{"
+    },
+    {
+      "id": 14,
+      "name": "Constancy",
+      "email": "cgaskarthd@quantcast.com",
+      "password": "wT8\"//oiL\\_'zJ"
+    },
+    {
+      "id": 15,
+      "name": "Fredericka",
+      "email": "fbotgere@com.com",
+      "password": "tD9@L{dX/$J@Aw8l"
+    },
+    {
+      "id": 16,
+      "name": "Alis",
+      "email": "arosenstengelf@comcast.net",
+      "password": "kS2(rtsH`MCQzr6"
+    },
+    {
+      "id": 17,
+      "name": "Evan",
+      "email": "ebresling@hao123.com",
+      "password": "qO5#...W"
+    },
+    {
+      "id": 18,
+      "name": "Aldin",
+      "email": "avequaudh@fastcompany.com",
+      "password": "fA1~%My*Ng"
+    },
+    {
+      "id": 19,
+      "name": "Dayle",
+      "email": "dbusfieldi@engadget.com",
+      "password": "hG1%/HLkywM"
+    },
+    {
+      "id": 20,
+      "name": "Evered",
+      "email": "ehealingj@youku.com",
+      "password": "yV1.kWhz&?BC"
+    },
+    {
+      "id": 21,
+      "name": "Ellis",
+      "email": "ealtreek@diigo.com",
+      "password": "oH1>bmRs'"
+    },
+    {
+      "id": 22,
+      "name": "Therese",
+      "email": "tperelll@gov.uk",
+      "password": "zM3?EmzcYmn"
+    }
+  ]
+}
