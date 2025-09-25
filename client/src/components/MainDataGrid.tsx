@@ -136,7 +136,7 @@ export default function FullFeaturedCrudGrid() {
 
   const processRowUpdate = (newRow: GridRowModel) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Email validation
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/; // Minimum 8 characters, at least one letter and one number
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/; // Minimum 8 characters, at least one letter and one number
 
     // Check if all fields are filled
     if (!newRow.name || !newRow.email || !newRow.password) {
