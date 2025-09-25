@@ -321,7 +321,7 @@ export default function FullFeaturedCrudGrid() {
             >
                 <Box
                     sx={{
-                        height: 520,
+                        height: 800,
                         width: '65%',
                         justifyContent: 'center',
                         alignItems: 'center',
